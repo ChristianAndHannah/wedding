@@ -649,6 +649,7 @@ $(document).ready(function () {
                     $('#alert-wrapper').html(alert_markup('danger', response.message));
                 } else {
                     $('#alert-wrapper').html('');
+                    resetFamilyLookupState();
                     $('#rsvp-modal').modal('show');
                 }
             })
