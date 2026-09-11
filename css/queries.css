@@ -275,6 +275,7 @@
         padding-top: 40px;
     }
 
+}
 
 @media screen and (min-width: 992px) and (max-width: 1199px) {
     .events .leftcol,
@@ -303,11 +304,20 @@
     footer .footer-links {
         margin: 120px 0 120px 0;
     }
-}
 
 @media screen and (max-width: 640px) {
     .hero .hero-content {
         padding-top: 100%;
+    }
+
+    #eng-pics .col-md-2 {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+
+    #eng-pics .col-md-2 > a {
+        display: block;
+        margin: 0 0 8px !important;
     }
 
     #eng-pics .img-wrap i {
@@ -415,5 +425,51 @@
 
     .rsvp {
         padding-top: 20px;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    #eng-pics .mobile-gallery-gap {
+        display: block;
+        margin-top: 8px !important;
+    }
+
+    #eng-pics .container-fluid > .row + .row {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #eng-pics .container-fluid > .row + .row > .col-md-2 {
+        float: none;
+        width: 100%;
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+
+    #eng-pics .container-fluid > .row + .row > .col-md-2:first-child {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #eng-pics .container-fluid > .row + .row > .col-md-2 > a {
+        display: block;
+        margin: 0 !important;
+    }
+
+    #eng-pics .container-fluid > .row + .row > .col-md-2:first-child > a + a {
+        margin-top: 10px !important;
+    }
+
+    #eng-pics .container-fluid > .row + .row > .col-md-2:not(:first-child) > a:first-child {
+        margin-top: 8px !important;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    #eng-pics .col-md-2 {
+        padding-left: 5px;
+        padding-right: 5px;
     }
 }
