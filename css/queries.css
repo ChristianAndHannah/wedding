@@ -1,3 +1,17 @@
+#rsvp-modal .modal-dialog {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0 auto;
+}
+
+@media screen and (max-width: 767px) {
+    #rsvp-modal .modal-dialog {
+        margin: 0 10px;
+    }
+}
+
 @media screen and (max-width: 1200px) {
     header {
         width: 90%;
