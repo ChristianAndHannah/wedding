@@ -1,0 +1,1448 @@
+// Google Fonts
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800);
+@import url(https://fonts.googleapis.com/css?family=Merriweather:400,300,400italic,300italic,700,700italic);
+@import url(https://fonts.googleapis.com/css?family=Nunito:400,300,700);
+// Imports
+//@import "compass";
+@import "partials/typography";
+@import "partials/buttons";
+@import "partials/colors";
+@import "partials/layout";
+
+/* ==========================================================================
+Global Styles
+========================================================================== */
+.group:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.no-padding {
+  padding: 0;
+}
+.no-margin {
+  margin: 0;
+}
+a {
+  color: $accent-color;
+  -webkit-transition-timing-function: ease;
+  transition-timing-function: ease;
+  -webkit-transition-duration: 200ms;
+  transition-duration: 200ms;
+  -webkit-transition-property: color, border-color, background-color;
+  transition-property: color, border-color, background-color;
+}
+a:hover, a:focus {
+  color: $accent-color-hover;
+  text-decoration: none;
+}
+body {
+  font-family: $sans-serif;
+  font-weight: $light;
+  color: $txt-primary;
+  -webkit-text-size-adjust: 100%;
+  //fix for iOS
+}
+*:focus {
+  outline: none !important;
+}
+ul, ol {
+  margin: 0;
+  padding: 0;
+}
+ul li {
+  list-style: none;
+}
+section .header {
+  padding-bottom: 30px;
+}
+.section-padding {
+  padding: $section-padding;
+}
+.section-border {
+  border-bottom: 1px solid $keyline-color;
+}
+.tooltip {
+  position: absolute;
+  z-index: 1070;
+  display: block;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 1.4;
+  visibility: visible;
+  filter: alpha(opacity=0);
+  opacity: 0;
+}
+.tooltip.in {
+  filter: alpha(opacity=90);
+  opacity: .9;
+}
+.tooltip.top {
+  padding: 5px 0;
+  margin-top: -3px;
+}
+.tooltip.right {
+  padding: 0 5px;
+  margin-left: 3px;
+}
+.tooltip.bottom {
+  padding: 5px 0;
+  margin-top: 3px;
+}
+.tooltip.left {
+  padding: 0 5px;
+  margin-left: -3px;
+}
+.tooltip-inner {
+  max-width: 200px;
+  padding: 3px 8px;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  text-transform: capitalize;
+  background-color: #000;
+  border-radius: 4px;
+}
+/* ==========================================================================
+Animations
+========================================================================== */
+.pulse2 {
+  animation-name: pulse2;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+@keyframes pulse2 {
+  0% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.floating-arrow {
+  animation-name: floating-arrow;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+@keyframes floating-arrow {
+  from {
+    transform: translate(-50%, 0)
+  }
+  65% {
+    transform: translate(-50%, 15px)
+  }
+  to {
+    transform: translate(-50%, 0)
+  }
+}
+.floating-logo {
+  animation-name: floating-logo;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+@keyframes floating-logo {
+  from {
+    transform: translate(-50%, 0)
+  }
+  50% {
+    transform: translate(-50%, 10px)
+  }
+  to {
+    transform: translate(-50%, 0)
+  }
+}
+
+/* ==========================================================================
+Waypoinsts
+========================================================================== */
+.wp1, .wp2, .wp3, .wp4, .wp5, .wp6, .wp7, .wp8, .wp9 {
+  visibility: hidden
+}
+.wp8, .wp9 {
+  -webkit-animation-delay: 0.3s;
+  animation-delay: 0.3s
+}
+.bounceInLeft, .bounceInRight, .fadeInUp, .fadeInUpDelay, .fadeInDown, .fadeInUpD, .fadeInLeft, .fadeInRight, .bounceInDown {
+  visibility: visible
+}
+
+/* ==========================================================================
+Navigation
+========================================================================== */
+.header-nav.open {
+  visibility: visible;
+  opacity: 0.9;
+  -webkit-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+}
+.nav-toggle {
+  position: absolute;
+  top: 0;
+  right: 15px;
+  z-index: 999999;
+  padding: 10px 35px 16px 0;
+  cursor: pointer
+}
+.nav-toggle:focus {
+  outline: none
+}
+.nav-toggle span, .nav-toggle span:before, .nav-toggle span:after {
+  content: "";
+  position: absolute;
+  display: block;
+  width: 35px;
+  height: 3px;
+  -moz-border-radius: 1px;
+  -webkit-border-radius: 1px;
+  border-radius: 1px;
+  background: #fff;
+  cursor: pointer
+}
+.nav-toggle span:before {
+  top: -10px
+}
+.nav-toggle span:after {
+  bottom: -10px
+}
+.nav-toggle span, .nav-toggle span:before, .nav-toggle span:after {
+  -moz-transition: all 300ms ease-in-out;
+  -o-transition: all 300ms ease-in-out;
+  -webkit-transition: all 300ms ease-in-out;
+  transition: all 300ms ease-in-out
+}
+.nav-toggle.active span {
+  background-color: transparent
+}
+.nav-toggle.active span:before, .nav-toggle.active span:after {
+  top: 0
+}
+.nav-toggle.active span:before {
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg)
+}
+.nav-toggle.active span:after {
+  top: 10px;
+  -moz-transform: translatey(-10px) rotate(-45deg);
+  -ms-transform: translatey(-10px) rotate(-45deg);
+  -o-transform: translatey(-10px) rotate(-45deg);
+  -webkit-transform: translatey(-10px) rotate(-45deg);
+  transform: translatey(-10px) rotate(-45deg)
+}
+.navicon {
+  position: absolute;
+  height: 26px;
+  right: 10px;
+  top: 48px;
+  visibility: hidden;
+  transition: all 300ms ease-in-out;
+}
+
+/* ==========================================================================
+Hero
+========================================================================== */
+.hero {
+  min-height: 750px;
+  background: url('../img/hero-min.jpg') center center;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  position: relative;
+
+  /*.rsvp-btn {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+  }*/
+  .down-arrow a {
+    color: $txt-light;
+  }
+  h1 {
+    color: $txt-light;
+    margin-bottom: 40px;
+  }
+  p.intro {
+    color: $txt-light;
+    font-size: 20px;
+    font-weight: 300;
+    margin-bottom: 80px;
+  }
+  .hero-content {
+    padding-top: 40%;
+  }
+  .hero-content img {
+    width: 55%;
+    margin-bottom: 12%;
+  }
+}
+.navigation {
+  transition: all 300ms ease-in-out;
+  position: fixed;
+  width: 100%;
+  z-index: 999;
+}
+.fixed {
+  position: fixed;
+  background-color: rgba(25, 61, 24, .88);
+  z-index: 999;
+  width: 100%;
+}
+
+/* ==========================================================================
+Header / Nav bar
+========================================================================== */
+header {
+  padding: 50px 0;
+  border-bottom: none;
+  position: relative;
+  width: 100%;
+  max-width: 1170px;
+  margin: 0 auto;
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;
+  transition: padding 300ms ease-in-out;
+
+  a {
+    color: $txt-light;
+    text-transform: uppercase;
+    font-size: $nav-font-size;
+
+    &.login {
+      margin-right: 20px;
+    }
+  }
+  .logo {
+    display: inline-block;
+  }
+  .logo img {
+    height: 19px;
+  }
+
+  // Row that holds logo + nav (logo left, nav right)
+  .header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .header-nav {
+    flex: 1;
+    margin-left: 40px;
+  }
+
+  // Desktop only: split primary-nav (left) and member-actions (right)
+  // inside the actual <nav> element. Scoped to min-width so it never
+  // fights the hamburger overlay's own layout below 992px.
+  @media (min-width: 992px) {
+    .header-nav nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    ul.primary-nav {
+      display: flex;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+
+      li {
+        display: inline;
+
+        a {
+          color: $txt-light;
+          padding-right: 25px;
+
+          &:hover {
+            color: $accent-color;
+          }
+        }
+        &:last-child a {
+          padding-right: 0px;
+        }
+      }
+    }
+
+    // RSVP button + language toggle, right-aligned as a pair
+    ul.member-actions {
+      display: flex;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+
+      li {
+        display: inline;
+        margin-left: 20px;
+
+        &:first-child {
+          margin-left: 0;
+        }
+
+        a {
+          color: $txt-light;
+
+          &:hover {
+            color: $accent-color;
+          }
+        }
+      }
+
+      // language toggle reads as a plain nav-style link, matching primary-nav.
+      // Deliberately NOT setting color/text-transform/font-size here: those
+      // already come from `header a` on desktop and from queries.css's
+      // `nav ul li a` in the mobile overlay. An ID selector here would beat
+      // both of those at every breakpoint and desync the toggle's size from
+      // its siblings on mobile.
+      li a#language-toggle {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .down-arrow {
+  }
+}
+.down-arrow {
+  color: #fff;
+  font-size: 30px;
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ==========================================================================
+Social share buttons
+========================================================================== */
+.share-bar {
+  margin-top: 20px;
+}
+
+/* ==========================================================================
+Intro
+========================================================================== */
+.intro span.icon {
+  font-size: 40px;
+  color: $accent-color;
+  font-weight: bold;
+}
+.intro-icon {
+  display: inline-block;
+  vertical-align: top;
+  padding: 6px 0 0 0;
+  margin-right: 20px;
+  width: 40px;
+}
+.intro-content {
+  display: inline-block;
+  width: 80%;
+}
+
+#intro {
+  padding-top: 40px;
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+#intro p {
+  text-align: center;
+}
+
+/* ==========================================================================
+Features-stack
+========================================================================== */
+.features {
+  position: relative;
+
+  p {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  h3 {
+    margin: 0 0 20px 0;
+  }
+  span.icon {
+    font-size: 35px;
+    color: $accent-color;
+    font-weight: bold;
+  }
+  .feature-icon {
+    display: inline-block;
+    vertical-align: top;
+    padding: 6px 0 0 0;
+    margin-right: 20px;
+    width: 35px;
+  }
+  .feature-content {
+    display: inline-block;
+    width: 75%;
+  }
+  .intro-icon {
+    display: inline-block;
+    vertical-align: top;
+    padding: 6px 0 0 0;
+    margin-right: 20px;
+  }
+  .intro-content {
+    display: inline-block;
+    width: 80%;
+  }
+  ul.features-stack {
+    margin-top: 50px;
+  }
+  ul.features-stack li {
+    margin-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: solid 1px $keyline-color;
+  }
+  ul.features-stack li:last-child {
+    padding-bottom: 0px;
+    border-bottom: none;
+  }
+  .ipad-wrap {
+    width: 706px;
+    height: 1002px;
+    background: url("../img/ipad-device.png") no-repeat center center;
+    z-index: 1;
+  }
+  .iphone-wrap {
+    width: 304px;
+    height: 620px;
+    background: url("../img/iphone6.png") no-repeat center center;
+    position: absolute;
+    left: 530px;
+    bottom: 129px;
+    z-index: 2;
+  }
+  .device-showcase {
+    position: absolute;
+    bottom: -365px;
+    right: 61%;
+  }
+}
+.features .responsive-feature-img, .features-extra .responsive-feature-img {
+  display: none;
+}
+.devices {
+  position: relative;
+}
+
+/* ==========================================================================
+.features-extra
+========================================================================== */
+.features-extra {
+  position: relative;
+  z-index: 3;
+
+  .btn {
+    margin-top: 20px;
+  }
+  .macbook-wrap {
+    position: absolute;
+    width: 916px;
+    height: 540px;
+    background: url("../img/macbook-pro.png") no-repeat center center;
+    top: 114px;
+    z-index: 4;
+    left: 50%;
+  }
+}
+
+/* ==========================================================================
+.hero-strip
+========================================================================== */
+.hero-strip {
+  margin-top: 120px;
+  background: #333844 url("../img/polygonal-bg.jpg") no-repeat center center;
+  padding-bottom: 190px;
+  position: relative;
+
+  i {
+    font-family: $accent-font;
+    font-weight: 300;
+    font-size: 25px;
+    color: #F69D52;
+    vertical-align: top;
+    margin-left: -8px;
+    font-style: normal;
+  }
+  h2 {
+    color: #fff;
+    margin: 0 0 20px 0;
+  }
+  p {
+    color: #ACB1B4;
+  }
+  .btn {
+    margin-top: 10px;
+  }
+  .logo-placeholder {
+    width: 230px;
+    height: 230px;
+    position: absolute;
+    bottom: -285px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+/* ==========================================================================
+.events
+========================================================================== */
+.events {
+  .leftcol {
+    padding-right: 0;
+    padding-left: 150px;
+    border-right: solid 1px $keyline-color;
+  }
+
+  .leftcol h5 {
+    text-align: left;
+    padding-right: 0;
+    margin-left: 150px;
+  }
+
+  .rightcol {
+    padding-left: 50px;
+    padding-right: 0;
+  }
+
+  .rightcol h5 {
+    text-align: left;
+    padding-left: 50px;
+  }
+
+  .time {
+    font-size: 13px;
+    font-style: italic;
+    text-transform: lowercase;
+    color: $txt-primary;
+  }
+}
+
+/* ==========================================================================
+.blog
+========================================================================== */
+.blog {
+  padding-bottom: 120px;
+
+  img {
+    width: 100%;
+    height: auto;
+    -moz-transition: all 300ms ease-in-out;
+    -o-transition: all 300ms ease-in-out;
+    -webkit-transition: all 300ms ease-in-out;
+    transition: all 300ms ease-in-out;
+  }
+  h2 {
+    font-size: $blog-post-title;
+    color: $txt-accent;
+    font-weight: $semibold;
+    text-transform: uppercase;
+    margin-top: 35px;
+  }
+  .btn {
+    margin-top: 20px;
+  }
+  .blog-img-wrap {
+    position: relative;
+    overflow: hidden;
+
+    .overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: rgba($white-color, 0.5);
+      -moz-transition: all 300ms ease-in-out;
+      -o-transition: all 300ms ease-in-out;
+      -webkit-transition: all 300ms ease-in-out;
+      transition: all 300ms ease-in-out;
+      -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+      filter: alpha(opacity=0);
+      opacity: 0;
+    }
+    i {
+      color: $white-color;
+      font-size: 20px;
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      top: 25px;
+      right: 35px;
+    }
+  }
+  .blog-img-wrap:hover img, .blog-img-wrap:focus img {
+    -moz-transform: scale(1.1);
+    -ms-transform: scale(1.1);
+    -o-transform: scale(1.1);
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+  }
+  .blog-img-wrap:hover .overlay, .blog-img-wrap:focus .overlay {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=1)";
+    filter: alpha(opacity=1);
+    opacity: 1;
+    z-index: 9;
+  }
+  figcaption i {
+    margin-left: 5px;
+    font-size: 15px;
+  }
+  figcaption a.blog-post-title {
+    color: $txt-primary;
+  }
+  figcaption a.blog-post-title:hover, figcaption a.blog-post-title:focus {
+    color: $txt-secondary;
+  }
+}
+
+/* ==========================================================================
+Instagram
+========================================================================== */
+#instagram {
+  img {
+    width: 100%;
+  }
+}
+
+/* ==========================================================================
+Engagement Pics
+========================================================================== */
+#eng-pics {
+  img {
+    width: 100%;
+    height: auto;
+    -moz-transition: all 300ms ease-in-out;
+    -o-transition: all 300ms ease-in-out;
+    -webkit-transition: all 300ms ease-in-out;
+    transition: all 300ms ease-in-out;
+  }
+  .img-wrap {
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+  }
+  .img-wrap .overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+    -moz-transition: all 300ms ease-in-out;
+    -o-transition: all 300ms ease-in-out;
+    -webkit-transition: all 300ms ease-in-out;
+    transition: all 300ms ease-in-out;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    filter: alpha(opacity=0);
+    opacity: 0; }
+  .img-wrap i {
+    color: #fff;
+    font-size: 15px;
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    top: 6px;
+    right: 6px; }
+  .img-wrap:hover img, .img-wrap:focus img {
+    -moz-transform: scale(1.1);
+    -ms-transform: scale(1.1);
+    -o-transform: scale(1.1);
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1); }
+  .img-wrap:hover .overlay, .img-wrap:focus .overlay {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=1)";
+    filter: alpha(opacity=1);
+    opacity: 1;
+    z-index: 9; }
+  .diamond {
+    width: 230px;
+    height: 230px;
+    position: absolute;
+    bottom: -145px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 500;
+  }
+  .ring {
+    width: 75px;
+    height: 75px;
+    border-radius: 75px;
+    border: 10px solid #d0d3d4;
+    position: absolute;
+    left: 34%;
+    top: 75%;
+    z-index: -1;
+  }
+}
+
+/* ==========================================================================
+Embed video
+========================================================================== */
+#video-bg {
+  height: 300px;
+}
+#video-content {
+  width: 100%;
+  height: 100%;
+  padding-top: 100px;
+  position: relative;
+  background: rgba(17, 17, 17, 0.5);
+  text-align: center;
+}
+#video-content h5 {
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 300;
+  letter-spacing: 10px;
+}
+#video-content p {
+  color: #ffffff;
+}
+
+/* ==========================================================================
+Google map
+========================================================================== */
+#map-canvas {
+  height: 500px;
+  width: 100%;
+}
+#map-content-wrapper {
+  position: relative;
+  margin-top: -502px;
+  margin-bottom: 150px;
+}
+#map-content {
+  margin-top: 40px;
+  padding: 50px 60px;
+  background: #fff;
+  -webkit-transition: opacity 0.5s, visibility 0.6s, margin-top 0.5s;
+  transition: opacity 0.5s, visibility 0.6s, margin-top 0.5s;
+}
+#btn-show-content {
+  padding: 20px;
+  background: #fff;
+  cursor: pointer;
+  display: inline-block;
+  -webkit-transition: opacity 0.5s, visibility 0.6s, margin-top 0.5s;
+  transition: opacity 0.5s, visibility 0.6s, margin-top 0.5s;
+}
+.toggle-map-content {
+  opacity: 0;
+  visibility: hidden;
+}
+.pointer-events-none {
+  pointer-events: none;
+}
+.pointer-events-auto {
+  pointer-events: auto;
+}
+
+/* ==========================================================================
+RSVP form
+========================================================================== */
+.rsvp {
+  padding-bottom: 100px;
+  .rsvp-form {
+    .rsvp-btn {
+      padding: 15px 0;
+      border-radius: 3px;
+      width: 100%;
+      font-size: 13px;
+    }
+    .form-input-group {
+      width: 100%;
+      height: 55px;
+      margin: 0 auto 10px;
+      -moz-border-radius: 5px;
+      -webkit-border-radius: 5px;
+      border-radius: 5px;
+      border: solid 1px $keyline-color;
+      text-align: left;
+      position: relative;
+
+      i {
+        color: $accent-color;
+        font-size: 14px;
+      }
+      i:after {
+        content: "";
+        height: 30px;
+        width: 1px;
+        border-right: solid 1px $keyline-color;
+        position: absolute;
+        top: 50%;
+        left: 30px;
+        transform: translateY(-50%);
+      }
+      i.fa-user, i.fa-users, i.fa-envelope, .fa-key {
+        font-size: 14px;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        margin-left: 20px;
+      }
+      input {
+        padding-left: 68px;
+        width: 100%;
+        height: 100%;
+        -moz-border-radius: 6px;
+        -webkit-border-radius: 6px;
+        border-radius: 6px;
+        border: none;
+      }
+      input::-webkit-input-placeholder {
+        color: $form-placeholder;
+      }
+      input:-moz-placeholder {
+        color: $form-placeholder;
+      }
+      input::-moz-placeholder {
+        color: $form-placeholder;
+      }
+      input:-ms-input-placeholder {
+        color: $form-placeholder;
+      }
+    }
+  }
+}
+
+/* ==========================================================================
+Footer
+========================================================================== */
+footer {
+  .content {
+    border-top: none;
+    padding-bottom: 20px;
+  }
+  .to-top-wrapper {
+    font-size: 30px;
+    display: block;
+    cursor: pointer;
+    margin: -25px auto 50px;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    border: 1px solid $keyline-color;
+    background: #fff;
+  }
+  .to-top-wrapper .to-top {
+    display: block;
+    -webkit-transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
+    -ms-transition: all .3s ease-in-out;
+    -o-transition: all .3s ease-in-out;
+    transition: all .3s ease-in-out;
+  }
+  .to-top-wrapper .to-top:hover {
+    margin-top: -5px;
+  }
+  span.fa-heart {
+    color: #ff415c;
+    font-size: 18px;
+    margin: 0 2px;
+  }
+}
+
+/* ==========================================================================
+Bootstrap override
+========================================================================== */
+body.modal-open {
+  padding-right:0 !important;
+}
+.modal-body {
+  padding:25px;
+}
+.navigation,
+.navigation header {
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+
+/* ==========================================
+   DARK MODE
+   ========================================== */
+
+body.dark-mode {
+    background-color: $dark-bg;
+    color: $dark-text;
+}
+
+/* Main sections */
+body.dark-mode #invitation,
+body.dark-mode #map,
+body.dark-mode #registry {
+    background-color: $dark-bg;
+    color: $dark-text;
+}
+
+/* Alternating sections */
+/* Alternating sections - dark mode */
+body.dark-mode .events,
+body.dark-mode .rsvp,
+body.dark-mode #eng-pics {
+    background-color: $dark-bg-secondary;
+    color: $dark-text;
+}
+
+/* Headings */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6,
+body.dark-mode .header {
+    color: $dark-text;
+}
+
+/* Paragraphs */
+body.dark-mode p {
+    color: $dark-text-secondary;
+}
+
+/* Countdown */
+body.dark-mode #countdown,
+body.dark-mode #countdown span,
+body.dark-mode #countdown small {
+    color: $dark-text !important;
+}
+
+/* Date */
+body.dark-mode .section-padding div[style*="Great Vibes"] {
+    color: $dark-text !important;
+}
+
+/* Timeline */
+body.dark-mode .events h5 {
+    color: $dark-text;
+}
+
+body.dark-mode .events p {
+    color: $dark-text-secondary;
+}
+
+/* Modal windows */
+body.dark-mode .modal-content {
+    background-color: $dark-card;
+    color: $dark-text;
+}
+
+body.dark-mode .modal-content h3,
+body.dark-mode .modal-content h5,
+body.dark-mode .modal-content p,
+body.dark-mode .modal-content strong {
+    color: $dark-text;
+}
+
+/* RSVP */
+
+
+body.dark-mode .rsvp p {
+    color: $dark-text-secondary;
+}
+
+/* Forms */
+body.dark-mode .form-input-group {
+    background-color: $dark-card;
+    border-color: $dark-border;
+}
+
+body.dark-mode .form-input-group input, 
+body.dark-mode .form-input-group textarea { 
+    background-color: #4C4038 !important;
+    color: $dark-text;
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+    color: #969d96;
+}
+
+/* Family invite / alerts */
+body.dark-mode .alert {
+    background-color: $dark-card;
+    border-color: $dark-border;
+    color: $dark-text;
+}
+
+body.dark-mode .alert strong,
+body.dark-mode .alert label {
+    color: $dark-text;
+}
+
+/* Registry */
+body.dark-mode #registry {
+    background-color: $dark-bg;
+}
+
+body.dark-mode #registry p {
+    color: $dark-text-secondary;
+}
+
+body.dark-mode footer {
+    background-color: $dark-bg;
+    color: $dark-text;
+}
+
+body.dark-mode footer p {
+    color: $dark-text-secondary;
+}
+
+/* Theme toggle */
+.theme-toggle {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 9999;
+
+    width: 44px;
+    height: 44px;
+
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.9);
+    color: #3D4351;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 18px;
+
+    box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+
+    transition: all 0.25s ease;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.08);
+}
+
+body.dark-mode .theme-toggle {
+    background: #303630;
+    color: #eeeeea;
+    border-color: #4a524a;
+}
+/* Timeline event times */
+.events h5 .time {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 13px;
+    font-weight: 400;
+    color: $accent-color;
+    white-space: nowrap;
+}
+
+/* Dark mode timeline times */
+body.dark-mode .events h5 .time {
+    color: #A9B7A5;
+}
+
+/* ==========================================================================
+Responsive / Mobile
+========================================================================== */
+
+// Guarantee primary-nav and member-actions items stack one-per-line inside
+// the hamburger overlay, regardless of any float/inline-block behavior the
+// RSVP button's own classes (from partials/buttons.scss) might introduce.
+// Higher specificity than queries.css's "nav ul.member-actions li" so it
+// always wins, and scoped to the same breakpoint (991px) the overlay uses.
+@media (max-width: 991px) {
+  header ul.primary-nav li,
+  header ul.member-actions li {
+    display: block;
+    width: 100%;
+    clear: both;
+    float: none;
+    text-align: center;
+  }
+
+  header ul.member-actions li a {
+    float: none;
+    display: inline-block;
+    text-align: center;
+  }
+  header ul.member-actions {
+    width: 100%;
+    text-align: center;
+  }
+
+  header ul.member-actions li {
+    width: 100%;
+    display: block;
+    float: none;
+    clear: both;
+    margin-left: 0 !important;
+    text-align: center !important;
+  }
+
+  header ul.member-actions li a#language-toggle {
+    display: inline-block !important;
+    width: auto !important;
+    float: none !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
+  }
+}
+
+@media (max-width: 767px) {
+
+  #map-canvas {
+    height: 350px;
+  }
+
+  #map-content-wrapper {
+    margin-top: -300px;
+    margin-bottom: 80px;
+  }
+
+  #map-content {
+    margin-top: 20px;
+    padding: 30px 25px;
+  }
+
+  .rsvp {
+    padding-top: 60px;
+    padding-bottom: 80px;
+    clear: both;
+  }
+
+  /* Mobile timeline */
+  .events .row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .events .leftcol,
+  .events .rightcol {
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    border-right: none;
+    text-align: center;
+  }
+
+  .events .leftcol h5,
+  .events .rightcol h5 {
+    padding-left: 0;
+    padding-right: 0;
+    text-align: center;
+  }
+
+  .events h5,
+  .events p,
+  .events .time {
+    text-align: center;
+  }
+
+  .events h5 .time {
+    display: block;
+    margin-left: 0;
+    margin-top: 5px;
+  }
+
+}
+
+#events h3,
+#rsvp h3,
+#registry h3 {
+    margin-bottom: 20px;
+}
+
+#events h3 + p,
+#rsvp h3 + p,
+#registry h3 + p {
+    margin-top: 0;
+}
+#registry h3.header {
+    padding-bottom: 0 !important;
+    margin-bottom: 20px;
+}
+#events h3.header {
+    padding-bottom: 0 !important;
+    margin-bottom: 20px;
+}
+/* Light mode only */
+body:not(.dark-mode) #events,
+body:not(.dark-mode) #rsvp,
+body:not(.dark-mode) #eng-pics {
+  background-color: #FAF9F5;
+}
+/* ========================================================================== 
+Google Maps Popup
+========================================================================== */
+
+/* Popup */
+.gm-style .gm-style-iw-c {
+  background-color: #ffffff !important;
+  color: #3D4351 !important;
+  padding-top: 4px !important;
+  padding-bottom: 12px !important;
+  padding-right: 10px !important;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.20) !important;
+}
+
+.gm-style .gm-style-iw-d {
+  color: #3D4351 !important;
+  overflow: hidden !important;
+}
+
+.gm-style .gm-style-iw-t::after {
+  background: #ffffff !important;
+}
+
+/* Popup close button */
+.gm-style .gm-ui-hover-effect {
+  width: 20px !important;
+  height: 20px !important;
+  top: 1px !important;
+  right: 1px !important;
+}
+
+.gm-style .gm-ui-hover-effect > span {
+  width: 14px !important;
+  height: 14px !important;
+  margin: 3px !important;
+}
+
+/* Popup text */
+.map-info-window {
+  color: #3D4351;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.map-info-window strong {
+  font-size: 16px;
+}
+
+.map-info-window a {
+  display: inline-block;
+  margin-top: 6px;
+  color: #677F64;
+  font-size: 15px;
+}
+
+/* Dark mode popup */
+body.dark-mode .gm-style .gm-style-iw-c {
+  background-color: #4C4038 !important; 
+  color: #ffffff !important;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.45) !important;
+}
+
+body.dark-mode .gm-style .gm-style-iw-d {
+  color: #ffffff !important;
+}
+
+body.dark-mode .gm-style .gm-style-iw-t::after {
+  background: #4C4038 !important; 
+}
+
+body.dark-mode .map-info-window,
+body.dark-mode .map-info-window a {
+  color: #ffffff !important;
+}
+body.dark-mode #map a {
+  color: #A8B8A5 !important;
+}
+
+/* Dark mode RSVP fields */
+body.dark-mode .form-input-group input,
+body.dark-mode .form-input-group textarea,
+body.dark-mode .rsvp-form input,
+body.dark-mode .rsvp-form textarea {
+    background-color: #4C4038 !important;
+    color: #F2EEE8 !important;
+    border-color: #62544B !important;
+    caret-color: #F2EEE8;
+}
+
+/* Keep fields brown when focused */
+body.dark-mode .form-input-group input:focus,
+body.dark-mode .form-input-group textarea:focus,
+body.dark-mode .rsvp-form input:focus,
+body.dark-mode .rsvp-form textarea:focus {
+    background-color: #4C4038 !important;
+    color: #F2EEE8 !important;
+    border-color: #677F64 !important;
+    outline: none !important;
+}
+
+/* Placeholder text */
+body.dark-mode .form-input-group input::placeholder,
+body.dark-mode .form-input-group textarea::placeholder,
+body.dark-mode .rsvp-form input::placeholder,
+body.dark-mode .rsvp-form textarea::placeholder {
+    color: #CFC6BE !important;
+}
+
+/* Prevent browser autofill from turning fields white */
+body.dark-mode .rsvp-form input:-webkit-autofill,
+body.dark-mode .rsvp-form input:-webkit-autofill:hover,
+body.dark-mode .rsvp-form input:-webkit-autofill:focus,
+body.dark-mode .rsvp-form textarea:-webkit-autofill {
+    -webkit-text-fill-color: #F2EEE8 !important;
+    -webkit-box-shadow: 0 0 0 1000px #4C4038 inset !important;
+    box-shadow: 0 0 0 1000px #4C4038 inset !important;
+    background-color: #4C4038 !important;
+}
+
+/* ==========================================================
+   Dark mode RSVP action buttons
+   ========================================================== */
+
+body.dark-mode .rsvp button,
+body.dark-mode .rsvp .btn,
+body.dark-mode .rsvp input[type="button"],
+body.dark-mode .rsvp input[type="submit"] {
+    background-color: #4C4038 !important;
+    color: #F2EEE8 !important;
+    border-color: #62544B !important;
+}
+
+/* Hover */
+body.dark-mode .rsvp button:hover,
+body.dark-mode .rsvp .btn:hover,
+body.dark-mode .rsvp input[type="button"]:hover,
+body.dark-mode .rsvp input[type="submit"]:hover {
+    background-color: #677F64 !important;
+    color: #FFFFFF !important;
+    border-color: #677F64 !important;
+}
+
+/* Focus / active */
+body.dark-mode .rsvp button:focus,
+body.dark-mode .rsvp button:active,
+body.dark-mode .rsvp .btn:focus,
+body.dark-mode .rsvp .btn:active {
+    background-color: #4C4038 !important;
+    color: #F2EEE8 !important;
+    border-color: #677F64 !important;
+}
+/* Dark mode RSVP buttons - selected state */
+body.dark-mode .rsvp button.selected,
+body.dark-mode .rsvp .btn.selected,
+body.dark-mode .rsvp button.active,
+body.dark-mode .rsvp .btn.active {
+    background-color: #677F64 !important;
+    color: #FFFFFF !important;
+    border-color: #677F64 !important;
+}

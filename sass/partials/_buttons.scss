@@ -1,0 +1,224 @@
+// Buttons partial
+
+@import "partials/colors";
+
+.btn {
+	font-size: 13px;
+	border: solid 2px;
+	-moz-border-radius: 40px;
+	-webkit-border-radius: 40px;
+	border-radius: 40px;
+	display: inline-block;
+	text-transform: uppercase;
+}
+.btn:hover, .btn:focus {
+	color: $white-color;
+	border-color: $accent-color;
+	background-color: $accent-color;
+}
+.btn-white {
+	font-size: 13px;
+	border: solid 2px;
+	-moz-border-radius: 40px;
+	-webkit-border-radius: 40px;
+	border-radius: 40px;
+	display: inline-block;
+	border-color: $txt-light;
+}
+.btn-white:hover, .btn-white:focus {
+	color: $accent-color;
+	border-color: $accent-color;
+}
+.btn-fill {
+	color: $white-color;
+	border: solid 2px $accent-color;
+	-moz-border-radius: 40px;
+	-webkit-border-radius: 40px;
+	border-radius: 40px;
+	display: inline-block;
+	text-transform: uppercase;
+	background-color: $accent-color;
+}
+.btn-fill:hover, .btn-fill:focus {
+	color: $white-color;
+	background-color: $accent-color-hover;
+	border-color: $accent-color-hover;
+}
+.btn-small {
+	padding: 8px 30px;
+}
+.btn-large {
+	padding: 15px 40px;
+}
+.btn-margin-right {
+	margin-right: 20px;
+}
+/* RSVP buttons */
+
+/* Enter / Lookup Family button */
+#lookup-family-btn {
+    background-color: $accent-color !important;
+    color: $white-color !important;
+    border: 2px solid $accent-color !important;
+    padding: 8px 30px;
+    font-size: 13px;
+    border-radius: 40px;
+    text-transform: uppercase;
+}
+
+#lookup-family-btn:hover,
+#lookup-family-btn:focus {
+    background-color: $accent-color-hover !important;
+    color: $white-color !important;
+    border-color: $accent-color-hover !important;
+}
+
+/* Submit RSVP button */
+#submit-rsvp-btn {
+    background-color: $accent-color !important;
+    color: $white-color !important;
+    border: 2px solid $accent-color !important;
+    border-radius: 40px;
+}
+
+#submit-rsvp-btn:hover,
+#submit-rsvp-btn:focus {
+    background-color: $accent-color-hover !important;
+    color: $white-color !important;
+    border-color: $accent-color-hover !important;
+}
+/* RSVP input fields */
+.rsvp-form .form-input-group {
+    position: relative;
+}
+
+.rsvp-form .form-input-group input {
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    padding: 15px 20px 15px 45px;
+}
+
+/* Fix RSVP input alignment */
+.rsvp-form .form-input-group {
+    position: relative;
+    height: 82px;
+}
+
+.rsvp-form .form-input-group input {
+    width: 100%;
+    height: 82px;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0 20px 0 45px;
+    line-height: normal;
+    vertical-align: middle;
+    border: 1px solid $white-color;
+    border-radius: 6px;
+    background: transparent;
+    color: $txt-light;
+}
+
+.rsvp-form .form-input-group input::placeholder {
+    color: $txt-light;
+    opacity: 0.7;
+}
+
+.rsvp-form .form-input-group i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+}
+/* Registry buttons */
+/* Registry buttons */
+.registry-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 52px;
+    padding: 14px 22px !important;
+    margin: 8px 0 !important;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.3;
+    box-sizing: border-box;
+
+    /* Filled green style */
+    background-color: $accent-color !important;
+    border: 2px solid $accent-color !important;
+    color: #fff !important;
+}
+.registry-btn:hover,
+.registry-btn:focus {
+    background-color: $accent-color-hover !important;
+    border-color: $accent-color-hover !important;
+    color: #fff !important;
+}
+
+/* Registry button layout */
+#registry .registry-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 50px;
+    margin-top: 15px;
+}
+
+#registry .registry-button-column {
+    width: 300px;
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+    #registry .registry-buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    #registry .registry-button-column {
+        width: 100%;
+        max-width: 340px;
+    }
+
+    .registry-btn {
+        min-height: 54px;
+        padding: 14px 18px !important;
+        margin: 0 !important;
+    }
+}
+/* Navigation spacing */
+.member-actions li {
+    margin-left: 20px;
+}
+
+.member-actions li:first-child {
+    margin-left: 0;
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+    .registry-btn {
+        margin: 8px 5px !important;
+        white-space: normal;
+    }
+
+    .member-actions li {
+        margin-left: 10px;
+    }
+
+    .member-actions li:first-child {
+        margin-left: 0;
+    }
+
+    .member-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+    }
+}
