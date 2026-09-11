@@ -657,6 +657,19 @@ var darkMapStyles = [
 ];
 
 // Google map
+function getMapInfoWindowContent() {
+    var language = localStorage.getItem('wedding-language') || 'en';
+    var venueName = language === 'es' ? 'Patio de la Familia Ayala' : 'Ayala Family Backyard';
+    var venueAddress = '14741 Allemands Ave, El Paso, TX 79928';
+
+    return '<div class="map-info-window">' +
+        '<strong><a href="https://www.google.com/maps/dir/?api=1&destination=31.685082582261813,-106.1621363988813" target="_blank" rel="noopener noreferrer">' + venueName + '</a></strong><br>' +
+        '<a href="https://www.google.com/maps/dir/?api=1&destination=31.685082582261813,-106.1621363988813" target="_blank" rel="noopener noreferrer">' +
+        venueAddress +
+        '</a>' +
+        '</div>';
+}
+
 function initMap() {
     var location = {
         lat: 31.685082582261813,
@@ -677,15 +690,12 @@ function initMap() {
     });
 
     var infoWindow = new google.maps.InfoWindow({
-    content:
-        '<div class="map-info-window">' +
-'<strong><a href="https://www.google.com/maps/dir/?api=1&destination=31.685082582261813,-106.1621363988813" target="_blank" rel="noopener noreferrer">Ayala Family Backyard</a></strong><br>' +            '<a href="https://www.google.com/maps/dir/?api=1&destination=31.685082582261813,-106.1621363988813" target="_blank" rel="noopener noreferrer">' +
-                '14741 Allemands Ave, El Paso, TX 79928' +
-            '</a>' +
-        '</div>'
-});
+        content: getMapInfoWindowContent()
+    });
+    window.weddingInfoWindow = infoWindow;
 
     marker.addListener('click', function () {
+        infoWindow.setContent(getMapInfoWindowContent());
         infoWindow.open(map, marker);
     });
 

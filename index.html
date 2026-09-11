@@ -323,7 +323,7 @@
                     <h5><span data-i18n="ceremony">Ceremony</span> <span class="time">6PM - 6:45PM</span></h5>
                 </div>
                 <div class="wp5">
-                    <h5><span data-i18n="dance">First Dance</span> <span class="time">7:10PM</span></h5>
+                    <h5><span data-i18n="firstDance">First Dance</span> <span class="time">7:10PM</span></h5>
                 </div>
                 <div class="wp5">
                     <h5><span data-i18n="dinner">Dinner</span> <span class="time">7:30PM - 8:30PM</span></h5>
@@ -331,7 +331,7 @@
             </div>
             <div class="col-md-6 col-sm-12 col-xs-12 rightcol">
                 <div class="wp4">
-                    <h5><span data-i18n="cake">Cake Cutting</span> <span class="time">7:50PM</span></h5>
+                    <h5><span data-i18n="cakeCutting">Cake Cutting</span> <span class="time">7:50PM</span></h5>
                 </div>
                 <div class="wp4">
                     <h5><span data-i18n="party">Party</span> <span class="time">8:30PM - 10:30PM</span></h5>
@@ -408,13 +408,13 @@
         <div class="text-center">
             <h3 data-i18n="location">Location</h3>
 
-            <h5 style="margin-top: 20px;">Ayala Family Backyard</h5>
+            <h5 style="margin-top: 20px;" data-i18n="venueName">Ayala Family Backyard</h5>
 
             <p style="margin-bottom: 30px;">
                 <a href="https://www.google.com/maps/dir/?api=1&destination=31.685082582261813,-106.1621363988813"
                 target="_blank"
                 rel="noopener noreferrer">
-                    14741 Allemands Ave, El Paso, TX 79928
+                    <span data-i18n="venueAddress">14741 Allemands Ave, El Paso, TX 79928</span>
                 </a>
             </p>
         </div>
@@ -513,7 +513,7 @@
                         <div class="row" style="margin-top: 10px;">
                             <div class="col-md-12">
                                 <button type="button" id="lookup-family-btn" class="btn btn-accent btn-small">
-                                    <span data-i18n="enter">Search</span>
+                                    <span data-i18n="search">Search</span>
                                 </button>
                             </div>
                         </div>
@@ -572,7 +572,7 @@
                     <div class="registry-buttons">
                         <div class="registry-button-column">
                             <a class="btn btn-accent registry-btn"
-                            href="https://www.amazon.com/wedding/share/ChristianDessAndHannah"
+                            href="https://www.amazon.com/wedding/share/ChristianDessAndHannahAyala"
                             target="_blank"
                             rel="noopener noreferrer">
                                 <i class="fa fa-gift"></i>&nbsp;&nbsp;
@@ -754,10 +754,14 @@
             seconds: "Seconds",
             timelineIntro: "Please arrive a few minutes early to find your seat before the ceremony begins.",
             ceremony: "Ceremony",
+            firstDance: "First Dance",
+            cakeCutting: "Cake Cutting",
             dinner: "Dinner",
             party: "Party",
             sendoff: "Sendoff",
             location: "Location",
+            venueName: "Ayala Family Backyard",
+            venueAddress: "14741 Allemands Ave, El Paso, TX 79928",
             showInfo: "Show info",
             thankYou: "Thank you!",
             gladToSeeYou: "We are glad to see you join us on our big day.",
@@ -770,7 +774,7 @@
             cannotAttend: "We cannot attend",
             anythingToShare: "Anything you'd like to share?",
             optionalNote: "Optional note",
-submit: "Submit",
+            submit: "Submit",
             registryDescription: "Your presence at our wedding is the greatest gift of all, but if you'd like to help us start this new chapter, we've put together a registry.",
             amazonRegistry: "Amazon Registry",
             targetRegistry: "Target Registry",
@@ -795,10 +799,14 @@ submit: "Submit",
             seconds: "Segundos",
             timelineIntro: "Por favor, lleguen unos minutos antes para encontrar su lugar antes de que comience la ceremonia.",
             ceremony: "Ceremonia",
+            firstDance: "Primer baile",
+            cakeCutting: "Cortado del pastel",
             dinner: "Cena",
             party: "Fiesta",
             sendoff: "Despedida",
             location: "Lugar",
+            venueName: "Patio de la Familia Ayala",
+            venueAddress: "14741 Allemands Ave, El Paso, TX 79928",
             showInfo: "Mostrar información",
             thankYou: "¡Gracias!",
             gladToSeeYou: "Nos alegra mucho que nos acompañen en nuestro gran día.",
@@ -820,6 +828,7 @@ submit: "Submit",
     };
 
     let currentLanguage = localStorage.getItem("wedding-language") || "en";
+    window.currentLanguage = currentLanguage;
 
     function applyLanguage(language) {
         const dictionary = translations[language] || translations.en;
@@ -850,6 +859,11 @@ submit: "Submit",
 
         localStorage.setItem("wedding-language", language);
         currentLanguage = language;
+        window.currentLanguage = language;
+
+        if (window.weddingInfoWindow && typeof getMapInfoWindowContent === "function") {
+            window.weddingInfoWindow.setContent(getMapInfoWindowContent());
+        }
 
         // Refresh countdown text if the wedding date has passed.
         if (typeof updateCountdown === "function") {
