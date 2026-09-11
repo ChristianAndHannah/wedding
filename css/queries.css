@@ -494,6 +494,10 @@
 }
 
 @media screen and (min-width: 992px) {
+    #rsvp {
+        padding-top: 40px;
+    }
+
     #eng-pics .col-md-2 {
         padding-left: 5px;
         padding-right: 5px;
