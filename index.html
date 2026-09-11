@@ -1,0 +1,1013 @@
+    <!doctype html>
+    <!--[if lt IE 7]>
+    <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+    <!--[if IE 7]>
+    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+    <!--[if IE 8]>
+    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+    <!--[if gt IE 8]><!-->
+    <html class="no-js" lang="en"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <title>Christian & Hannah are getting married!</title>
+        <meta name="description" content="We would like to invite you to our big day.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+        <meta property="og:title" content="Christian & Hannah are getting married">
+        <meta property="og:description" content="We would like to invite you to our big day.">
+        <meta property="og:image" content="https://wedding.ramswaroop.me/img/hero-min.jpg">
+        <meta property="og:type" content="website">
+        <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+        <link rel="manifest" href="manifest.json">
+        <link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+        <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+        <script>
+            // load css files from CDN if local node_modules fail
+            function loadCssFromCDN(css) {
+                // create new link tag
+                const link = document.createElement('link');
+                if (css === 'animate.css') {
+                    link.href = 'https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css';
+                } else if (css === 'font-awesome.css') {
+                    link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css';
+                }
+                link.rel = 'stylesheet';
+
+                // add link tag to head section
+                document.getElementsByTagName('head')[0].appendChild(link);
+            }
+
+            // load js files from CDN if local node_modules fail
+            function loadJsFromCDN(js) {
+                if (js === 'waypoints.js') {
+                    document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.js"><\/script>');
+                } else if (js === 'jquery.js') {
+                    document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"><\/script>');
+                }
+            }
+        </script>
+
+        <link rel="stylesheet" href="css/normalize.min.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/jquery.fancybox.css">
+        <link rel="stylesheet" href="css/flexslider.css">
+        <link rel="stylesheet" href="css/styles.min.css">
+        <link rel="stylesheet" href="css/queries.css">
+        <link rel="stylesheet" href="node_modules/animate.css/animate.min.css" onerror="loadCssFromCDN('animate.css')">
+        <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.min.css" onerror="loadCssFromCDN('font-awesome.css')">
+        <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+        <style>
+            .language-toggle {
+                cursor: pointer;
+                white-space: nowrap;
+            }
+
+            @media (max-width: 767px) {
+                .language-toggle {
+                    display: inline-block;
+                    margin-top: 8px;
+                }
+            }
+        </style>
+
+    </head>
+    <body id="top">
+    <!--[if lt IE 8]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade
+        your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <button
+    id="theme-toggle"
+    class="theme-toggle"
+    type="button"
+    aria-label="Toggle dark mode"
+    title="Toggle theme">
+    🌙
+</button>
+    <section class="hero" style="position: relative;">
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 1;"></div>
+    <section class="navigation" style="z-index: 9999;">
+            <header style="border-bottom: none;">
+                <div class="header-content">
+                    <img src="img/logo.png" alt="Logo" style="height: clamp(30px, 2.5vw, 65px) !important; max-height: none !important; width: auto !important;">                    <div class="header-nav">
+                        <nav>
+                            <ul class="primary-nav">
+                                <li><a href="#events" data-i18n="timeline">Timeline</a></li>
+                                <li><a href="#registry" data-i18n="registry">Registry</a></li>
+                                <li><a href="#map" data-i18n="venue">Venue</a></li>
+                                <li><a href="#eng-pics" data-i18n="engagement">Engagement</a></li>
+                            </ul>
+                            <ul class="member-actions">
+                                <li><a href="#rsvp" class="btn-white btn-small" data-i18n="rsvp">RSVP</a></li>
+                                <li><a href="#" id="language-toggle">Español</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="navicon">
+                        <a class="nav-toggle" href="#"><span></span></a>
+                    </div>
+                </div>
+            </header>
+        </section>
+        <div class="container" style="position: relative; z-index: 2;">
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="hero-content text-center">
+                        <img src="img/logo-lg.png" style="margin-top: -275px;width: 100%; max-width: 800px;">
+                        <!--<a href="#" class="btn btn-fill btn-large btn-margin-right">Scroll Down</a> -->
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 hidden-xs"></div>
+                <div class="col-sm-4 hidden-xs text-center"><a href="#rsvp"
+                                                            class="btn btn-accent btn-large rsvp-btn" style="margin-top: 200px; color: white"><span data-i18n="rsvp">RSVP</span></a></div>
+                <div class="col-sm-4 hidden-xs"></div>
+            </div>
+        </div>
+<div class="down-arrow floating-arrow" style="position: relative; z-index: 2;"><a href="#invitation"><i class="fa fa-angle-down"></i></a></div>
+    </section>
+
+<section id="invitation" class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+
+                <h3 data-i18n="gettingMarried">We're getting married!</h3>
+
+                <div style="
+                    font-family: 'Great Vibes', cursive;
+                    font-size: clamp(34px, 4.5vw, 58px);
+                    font-weight: 400;
+                    line-height: 1.2;
+                    margin: 8px 0;
+                    color: #444;
+                ">
+                    <span data-i18n="weddingDate">April 10<sup>th</sup>, 2027</span>
+                </div>
+
+                <p data-i18n="partOfIt">We would love for you to be a part of it!</p>
+<div id="countdown" style="
+    display: flex;
+    justify-content: center;
+    gap: clamp(15px, 4vw, 45px);
+    margin-top: 20px;
+    color: #444;
+">
+
+    <!-- Months -->
+    <div style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 65px;
+    ">
+        <span id="months" style="
+            font-size: clamp(20px, 2.5vw, 34px);
+            font-weight: 600;
+            line-height: 1;
+            color: #444;
+        ">0</span>
+
+        <small style="
+            font-size: clamp(8px, 1vw, 11px);
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #444;
+        "><span data-i18n="months">Months</span></small>
+    </div>
+
+    <!-- Weeks -->
+    <div style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 65px;
+    ">
+        <span id="weeks" style="
+            font-size: clamp(20px, 2.5vw, 34px);
+            font-weight: 600;
+            line-height: 1;
+            color: #444;
+        ">0</span>
+
+        <small style="
+            font-size: clamp(8px, 1vw, 11px);
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #444;
+        "><span data-i18n="weeks">Weeks</span></small>
+    </div>
+
+    <!-- Days -->
+    <div style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 65px;
+    ">
+        <span id="days" style="
+            font-size: clamp(20px, 2.5vw, 34px);
+            font-weight: 600;
+            line-height: 1;
+            color: #444;
+        ">0</span>
+
+        <small style="
+            font-size: clamp(8px, 1vw, 11px);
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #444;
+        "><span data-i18n="days">Days</span></small>
+    </div>
+
+    <!-- Hours -->
+    <div id="hours-container" style="
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        min-width: 65px;
+    ">
+        <span id="hours" style="
+            font-size: clamp(20px, 2.5vw, 34px);
+            font-weight: 600;
+            line-height: 1;
+            color: #444;
+        ">0</span>
+
+        <small style="
+            font-size: clamp(8px, 1vw, 11px);
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #444;
+        "><span data-i18n="hours">Hours</span></small>
+    </div>
+
+    <!-- Minutes -->
+    <div id="minutes-container" style="
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        min-width: 65px;
+    ">
+        <span id="minutes" style="
+            font-size: clamp(20px, 2.5vw, 34px);
+            font-weight: 600;
+            line-height: 1;
+            color: #444;
+        ">0</span>
+
+        <small style="
+            font-size: clamp(8px, 1vw, 11px);
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #444;
+        "><span data-i18n="minutes">Minutes</span></small>
+    </div>
+
+    <!-- Seconds -->
+    <div id="seconds-container" style="
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        min-width: 65px;
+    ">
+        <span id="seconds" style="
+            font-size: clamp(20px, 2.5vw, 34px);
+            font-weight: 600;
+            line-height: 1;
+            color: #444;
+        ">0</span>
+
+        <small style="
+            font-size: clamp(8px, 1vw, 11px);
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #444;
+        "><span data-i18n="seconds">Seconds</span></small>
+    </div>
+
+</div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="events section-padding" id="events">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <h3 class="header text-center" data-i18n="timeline">Timeline</h3>
+                    <p class="text-center" data-i18n="timelineIntro">Please arrive a few
+                        minutes early to find your seat before the ceremony begins.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-sm-12 col-xs-12 leftcol text-left">
+                <div class="wp3">
+                    <h5><span data-i18n="ceremony">Ceremony</span> <span class="time">6PM - 6:45PM</span></h5>
+                </div>
+                <div class="wp5">
+                    <h5><span data-i18n="dance">First Dance</span> <span class="time">7:10PM</span></h5>
+                </div>
+                <div class="wp5">
+                    <h5><span data-i18n="dinner">Dinner</span> <span class="time">7:30PM - 8:30PM</span></h5>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12 col-xs-12 rightcol">
+                <div class="wp4">
+                    <h5><span data-i18n="cake">Cake Cutting</span> <span class="time">7:50PM</span></h5>
+                </div>
+                <div class="wp4">
+                    <h5><span data-i18n="party">Party</span> <span class="time">8:30PM - 10:30PM</span></h5>
+                </div>
+                <div class="wp6">
+                    <h5><span data-i18n="sendoff">Sendoff</span> <span class="time">10:30PM</span></h5>
+                </div>
+            </div>
+        </div>
+        <!--
+        <div class="row section-padding">
+            <div class="col-md-4 col-md-offset-4 text-center">
+                <a class="btn btn-accent btn-small" data-toggle="modal" data-target="#dc-modal">
+                    <i class="fa fa-barcode"></i>&nbsp;&nbsp;Dress code
+                </a>
+            </div>
+        </div>
+    </div>-->
+    <!-- dc-modal stays the same below -->
+</section>
+<!--
+<div id="dc-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span>
+                </button>
+                <h3 class="text-center section-padding">Ugh... dress codes?</h3>
+                <h5><span data-i18n="ceremony">Ceremony</span> <span class="time">4PM - 5PM</span></h5>
+                <p>
+                    <strong>Formal attire</strong>
+                    <br>
+                    Ladies can wear a cocktail dress or formal gown, and gentlemen can wear a suit
+                    and tie.
+                </p>
+                <h5><span data-i18n="dinner">Dinner</span> <span class="time">5:30PM - 7PM</span></h5>
+                <p>
+                    <strong>Semi-formal</strong>
+                    <br>
+                    Feel free to relax the formality a touch — a nice dress or skirt for the ladies,
+                    and a blazer with or without a tie for gentlemen.
+                </p>
+                <h5><span data-i18n="party">Party</span> <span class="time">7PM - 11PM</span></h5>
+                <p>
+                    <strong>Dance-floor ready</strong>
+                    <br>
+                    Comfortable but stylish — save the heels for photos and bring shoes you can
+                    actually dance in. Ties and jackets are welcome to come off!
+                </p>
+                <h5><span data-i18n="sendoff">Sendoff</span> <span class="time">11PM</span></h5>
+                <p>
+                    <strong>Casual</strong>
+                    <br>
+                    Whatever you've got on by this point is perfect — just come say goodbye!
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+-->
+    <!--
+    <section id="video-bg" class="hidden-sm hidden-xs">
+        <div id="bgndVideo" class="player"
+            data-property="{videoURL:'https://youtu.be/9giqL1H6yRs',containment:'#video-bg',autoPlay:true, mute:true, showControls:false, startAt:80, stopAt:259, opacity:1}">
+        </div>
+        <div id="video-content">
+            <h5>Kolkata</h5>
+            <p>City of joy</p>
+        </div>
+    </section>
+    -->
+
+    <section id="map" class="section-padding">
+        <div class="text-center">
+            <h3 data-i18n="location">Location</h3>
+
+            <h5 style="margin-top: 20px;">Ayala Family Backyard</h5>
+
+            <p style="margin-bottom: 30px;">
+                <a href="https://www.google.com/maps/dir/?api=1&destination=31.685082582261813,-106.1621363988813"
+                target="_blank"
+                rel="noopener noreferrer">
+                    14741 Allemands Ave, El Paso, TX 79928
+                </a>
+            </p>
+        </div>
+        <div id="map-canvas"></div>
+        <!--
+        <div id="map-content-wrapper" class="container pointer-events-none">
+            <div class="row">
+                <div class="col-xs-offset-1 col-xs-10 col-md-offset-3 col-md-6">
+                    <div class="text-center">
+                        <div id="btn-show-content" class="toggle-map-content pointer-events-auto">
+                            <i class="fa fa-info-circle"></i>&nbsp;&nbsp; <span data-i18n="showInfo">Show info</span>
+                        </div>
+                    </div>
+                    <div id="map-content" class="pointer-events-auto">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Ayala Family Backyard</h5>
+                                <p>14741 Allemands Ave, El Paso, TX 79928</p>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h5>idk yet</h5>
+                                <p><i class="fa fa-mobile"></i> <a href="tel://+919412345678">+91 9412345678</a><br>
+                                    <i class="fa fa-mobile"></i> <a href="tel://+917123456789">+91 7123456789</a></p>
+                                </div>
+                        </div>
+
+                        <div class="row text-center">
+                            <div class="col-md-6" style="padding: 5px;">
+                                <a class="btn btn-fill btn-small"
+                                href="https://m.uber.com/ul/?action=setPickup&client_id=Yh7Dl6SjB56RY2JuuZF8ttVa6ryFV78W&pickup=my_location&dropoff[formatted_address]=Fortune%20Park%20Panchwati%20-%20Hotels%20in%20Kolkata%2C%20Howrah%2C%20West%20Bengal%2C%20India&dropoff[latitude]=22.593276&dropoff[longitude]=88.270277"><i
+                                        class="fa fa-taxi"></i>&nbsp;&nbsp;Book Uber</a>
+                            </div>
+                            <div class="col-md-6" style="padding: 5px;">
+                                <a class="btn btn-accent btn-small" id="btn-show-map"><i class="fa fa-map-marker"></i>&nbsp;&nbsp;Show
+                                    map</a>
+                            </div>
+                        </div>
+                    
+                    </div>
+                </div>
+            </div>
+        </div>-->
+    </section>
+
+    <section class="rsvp text-center" id="rsvp">
+
+        <div id="rsvp-modal" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span>
+                        </button>
+                        <div class="section-padding">
+                            <h3 data-i18n="thankYou">Thank you!</h3>
+                            <p data-i18n="gladToSeeYou">We are glad to see you join us on our big day.</p>
+                            <div id="add-to-cal"></div>
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <h3 data-i18n="rsvp">RSVP</h3>
+                    <p data-i18n="rsvpDeadline">We would greatly appreciate if you could RSVP before 1st of November '17</p>
+                    <form id="rsvp-form" class="rsvp-form"
+                        action=""
+                        method="POST">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6">
+                                <div class="form-input-group">
+                                    <i class="fa fa-phone"></i>
+                                    <input type="tel"
+                                        name="phone"
+                                        id="guest_phone"
+                                        class=""
+                                        placeholder="Your phone number"
+                                        data-i18n-placeholder="yourPhone"
+                                        inputmode="tel"
+                                        autocomplete="tel"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <div class="form-input-group">
+                                    <i class="fa fa-user"></i><input name="name" id="guest_name" class=""
+                                                                    placeholder="Enter your full name" data-i18n-placeholder="fullName"
+                                                                    required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 10px;">
+                            <div class="col-md-12">
+                                <button type="button" id="lookup-family-btn" class="btn btn-accent btn-small">
+                                    <span data-i18n="enter">Search</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row" id="family-selection-row" style="display:none; margin-top: 15px;">
+                            <div class="col-md-12">
+                                <div class="alert alert-info" style="text-align:left;">
+                                    <div style="margin-bottom:12px;">
+                                        <strong data-i18n="familyInvite">Family invite</strong>
+                                    </div>
+                                    <div style="margin-bottom:12px;">
+                                        <button type="button" id="check-all-family-btn" class="btn btn-accent btn-small"><span data-i18n="checkAll">Check all</span></button>
+                                        <button type="button" id="cannot-attend-btn" class="btn btn-default btn-small"><span data-i18n="cannotAttend">We cannot attend</span></button>
+                                    </div>
+                                    <ul id="family-members-list" class="list-unstyled" style="margin-top:10px;"></ul>
+                                    <div id="family-status-text" style="margin-top:10px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:15px;">
+                            <div class="col-md-12">
+                                <div id="family-match" class="alert alert-info" style="display:none;">
+                                    <div class="form-group" style="margin-top:8px; text-align:left;">
+                                        <label for="rsvp-notes" style="display:block; margin-bottom:8px; font-weight:600;"><span data-i18n="anythingToShare">Anything you'd like to share?</span></label>
+                                        <textarea name="notes" id="rsvp-notes" class="form-control" rows="3" placeholder="Optional note" data-i18n-placeholder="optionalNote"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" id="alert-wrapper"></div>
+                        </div>
+                        <input type="hidden" name="family_id" id="family-id">
+                        <input type="hidden" name="family_name" id="family-name">
+                        <input type="hidden" name="family_members" id="family-members-input">
+                        <input type="hidden" name="attending_members" id="attending-members-input">
+                        <input type="hidden" name="not_attending_members" id="not-attending-members-input">
+                        <input type="hidden" name="cannot_attend" id="family-cannot-attend" value="0">
+                        <input type="hidden" name="extras" id="extras-input" value="0">
+                        <button type="submit" id="submit-rsvp-btn" class="btn-fill rsvp-btn" disabled style="display:none;">
+                            <span data-i18n="submit">Submit</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="registry" class="section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h3 class="header" data-i18n="registry">Registry</h3>
+                    <p data-i18n="registryDescription">Your presence at our wedding is the greatest gift of all, but if you'd like to help us
+                        start this new chapter, we've put together a registry.</p>
+                    <div class="row section-padding">
+                    <div class="registry-buttons">
+                        <div class="registry-button-column">
+                            <a class="btn btn-accent registry-btn"
+                            href="https://www.amazon.com/wedding/share/ChristianDessAndHannah"
+                            target="_blank"
+                            rel="noopener noreferrer">
+                                <i class="fa fa-gift"></i>&nbsp;&nbsp;
+                                <span data-i18n="amazonRegistry">Amazon Registry</span>
+                            </a>
+                        </div>
+
+                        <div class="registry-button-column">
+                            <a class="btn btn-accent registry-btn"
+                            href="https://www.target.com/gift-registry/gift/christian-hannah-2027"
+                            target="_blank"
+                            rel="noopener noreferrer">
+                                <i class="fa fa-gift"></i>&nbsp;&nbsp;
+                                <span data-i18n="targetRegistry">Target Registry</span>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </section>
+        <section id="eng-pics" class="section-padding">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h3 class="header" data-i18n="engagementPics">Engagement Pictures</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <a class="fancybox" rel="group" href="img/hugging.jpg">
+                        <div class="img-wrap" style="position: relative; width: 100%; padding-top: 72.3%; overflow: hidden;">
+                            <div class="overlay">
+                                <i class="fa fa-search"></i>
+                            </div>
+                            <img src="img/hugging.jpg" alt="" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"/>
+                        </div>
+                    </a>
+                    <a class="fancybox" rel="group" href="img/holdingFace.jpeg" style="display:block; margin-top: 8px;">
+                        <div class="img-wrap" style="position: relative; width: 100%; padding-top: 72.3%; overflow: hidden;">
+                            <div class="overlay">
+                                <i class="fa fa-search"></i>
+                            </div>
+                            <img src="img/holdingFace.jpeg" alt="" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"/>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-2">
+                    <a class="fancybox" rel="group" href="img/bridgeHoldingHands.jpg">
+                        <div class="img-wrap">
+                            <div class="overlay">
+                                <i class="fa fa-search"></i>
+                            </div>
+                            <img src="img/bridgeHoldingHands.jpg" alt=""/>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-2">
+                    <a class="fancybox" rel="group" href="img/holding.jpeg">
+                        <div class="img-wrap">
+                            <div class="overlay">
+                                <i class="fa fa-search"></i>
+                            </div>
+                            <img src="img/holding.jpeg" alt=""/>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-2">
+                    <a class="fancybox" rel="group" href="img/boat.jpeg">
+                        <div class="img-wrap" style="position: relative; width: 100%; padding-top: 150%; overflow: hidden;">
+                            <div class="overlay">
+                                <i class="fa fa-search"></i>
+                            </div>
+                            <img src="img/boat.jpeg" alt="" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"/>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-2">
+                    <a class="fancybox" rel="group" href="img/ring.jpeg">
+                        <div class="img-wrap">
+                            <div class="overlay">
+                                <i class="fa fa-search"></i>
+                            </div>
+                            <img src="img/ring.jpeg" alt=""/>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-2">
+                    <a class="fancybox" rel="group" href="img/underArch.jpg">
+                        <div class="img-wrap">
+                            <div class="overlay">
+                                <i class="fa fa-search"></i>
+                            </div>
+                            <img src="img/underArch.jpg" alt=""/>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row hidden-lg hidden-md hidden-xs">
+                <div class="col-xs-12 section-border section-padding"></div>
+            </div>
+        </div>
+        <!--<div class="row">
+            <div class="col-md-12">
+                <div class="diamond floating-logo">
+                    <img src="img/sketch-logo.png" alt="Sketch Logo">
+                    <div class="ring"></div>
+                </div>
+            </div>
+        </div>-->
+    </section>
+
+
+    <footer style="position: relative;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 text-center content">
+                    <span class="to-top-wrapper"><a href="#top" class="to-top"><i class="fa fa-angle-up"></i></a></span>
+                    <p data-i18n="footer">Crafted by Christian and Hannah </p>
+                </div>
+            </div>
+        </div>
+        <img src="img/corner.png" style="position: absolute; left: 0; bottom: 10px; width: 100px;">
+    </footer>
+
+    <script src="js/vendor/jquery-1.11.2.min.js" onerror="loadJsFromCDN('jquery.js')"></script>
+    <script src="node_modules/waypoints/lib/jquery.waypoints.min.js" onerror="loadJsFromCDN('waypoints.js')"></script>
+    <script src="js/jquery.fancybox.pack.js"></script>
+    <script src="js/vendor/bootstrap.min.js"></script>
+    <script src="js/jquery.flexslider-min.js"></script>
+    <script src="js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="js/vendor/ouical.js"></script>
+    <script src="js/scripts.js"></script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBamQW8PFrD0KCd7jpPlVuj5GPMwp7I2lE&callback=initMap"></script>
+    <!-- Google Analytics -->
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-46465113-4', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+    
+<script>
+    /*
+     * English / Spanish language switcher
+     * The visitor's choice is saved in localStorage.
+     */
+    const translations = {
+        en: {
+            timeline: "Timeline",
+            registry: "Registry",
+            engagement: "Engagement",
+            engagementPics: "Engagement Pictures",
+            venue: "Venue",
+            rsvp: "RSVP",
+            gettingMarried: "We're getting married!",
+            weddingDate: "April 10<sup>th</sup>, 2027",
+            partOfIt: "We would love for you to be a part of it!",
+            days: "Days",
+            hours: "Hours",
+            months: "Months",
+            weeks: "Weeks",
+            minutes: "Minutes",
+            seconds: "Seconds",
+            timelineIntro: "Please arrive a few minutes early to find your seat before the ceremony begins.",
+            ceremony: "Ceremony",
+            dinner: "Dinner",
+            party: "Party",
+            sendoff: "Sendoff",
+            location: "Location",
+            showInfo: "Show info",
+            thankYou: "Thank you!",
+            gladToSeeYou: "We are glad to see you join us on our big day.",
+            rsvpDeadline: "We would greatly appreciate if you could RSVP before 1st of November '17",
+            yourPhone: "Your phone number",
+            fullName: "Enter your full name",
+            search: "Search",
+            familyInvite: "Family invite",
+            checkAll: "Check all",
+            cannotAttend: "We cannot attend",
+            anythingToShare: "Anything you'd like to share?",
+            optionalNote: "Optional note",
+submit: "Submit",
+            registryDescription: "Your presence at our wedding is the greatest gift of all, but if you'd like to help us start this new chapter, we've put together a registry.",
+            amazonRegistry: "Amazon Registry",
+            targetRegistry: "Target Registry",
+            footer: "Crafted by Christian and Hannah"
+        },
+
+        es: {
+            timeline: "Itinerario",
+            registry: "Mesa de regalos",
+            engagement: "Compromiso",
+            engagementPics: "Fotos de compromiso",
+            venue: "Lugar",
+            rsvp: "Confirmar asistencia",
+            gettingMarried: "¡Nos casamos!",
+            weddingDate: "10 de abril de 2027",
+            partOfIt: "¡Nos encantaría que fueran parte de este día tan especial!",
+            months: "Meses",
+            weeks: "Semanas",
+            days: "Días",
+            hours: "Horas",
+            minutes: "Minutos",
+            seconds: "Segundos",
+            timelineIntro: "Por favor, lleguen unos minutos antes para encontrar su lugar antes de que comience la ceremonia.",
+            ceremony: "Ceremonia",
+            dinner: "Cena",
+            party: "Fiesta",
+            sendoff: "Despedida",
+            location: "Lugar",
+            showInfo: "Mostrar información",
+            thankYou: "¡Gracias!",
+            gladToSeeYou: "Nos alegra mucho que nos acompañen en nuestro gran día.",
+            rsvpDeadline: "Les agradeceríamos mucho que confirmaran su asistencia antes del 1 de noviembre de '17",
+            yourPhone: "Tu número de teléfono",
+            fullName: "Escribe tu nombre completo",
+            search: "Buscar",
+            familyInvite: "Invitación familiar",
+            checkAll: "Seleccionar todos",
+            cannotAttend: "No podemos asistir",
+            submit: "Enviar",
+            anythingToShare: "¿Hay algo que te gustaría compartir?",
+            optionalNote: "Nota opcional",
+            registryDescription: "Su presencia en nuestra boda es el mejor regalo de todos, pero si desean ayudarnos a comenzar esta nueva etapa, hemos preparado una mesa de regalos.",
+            amazonRegistry: "Mesa de regalos de Amazon",
+            targetRegistry: "Mesa de regalos de Target",
+            footer: "Creado por Christian y Hannah"
+        }
+    };
+
+    let currentLanguage = localStorage.getItem("wedding-language") || "en";
+
+    function applyLanguage(language) {
+        const dictionary = translations[language] || translations.en;
+
+        document.documentElement.lang = language;
+
+        document.querySelectorAll("[data-i18n]").forEach(function (element) {
+            const key = element.getAttribute("data-i18n");
+
+            if (dictionary[key] !== undefined) {
+                element.innerHTML = dictionary[key];
+            }
+        });
+
+        document.querySelectorAll("[data-i18n-placeholder]").forEach(function (element) {
+            const key = element.getAttribute("data-i18n-placeholder");
+
+            if (dictionary[key] !== undefined) {
+                element.placeholder = dictionary[key];
+            }
+        });
+
+        const languageToggle = document.getElementById("language-toggle");
+
+        if (languageToggle) {
+            languageToggle.textContent = language === "en" ? "Español" : "English";
+        }
+
+        localStorage.setItem("wedding-language", language);
+        currentLanguage = language;
+
+        // Refresh countdown text if the wedding date has passed.
+        if (typeof updateCountdown === "function") {
+            updateCountdown();
+        }
+    }
+
+    const languageToggle = document.getElementById("language-toggle");
+
+    if (languageToggle) {
+        languageToggle.addEventListener("click", function (event) {
+            event.preventDefault();
+
+            const newLanguage = currentLanguage === "en" ? "es" : "en";
+            applyLanguage(newLanguage);
+        });
+    }
+
+    applyLanguage(currentLanguage);
+</script>
+
+<script>
+const weddingDate = new Date("April 10, 2027 16:00:00");
+
+function updateCountdown() {
+    const now = new Date();
+
+    if (now >= weddingDate) {
+        const marriedText = currentLanguage === "es"
+            ? "¡Ya nos casamos!"
+            : "We're Married!";
+
+        document.getElementById("countdown").innerHTML =
+            "<div><span>❤️</span><small>" + marriedText + "</small></div>";
+
+        return;
+    }
+
+    const distance = weddingDate - now;
+
+    // 1 week or less remaining
+    if (distance <= 7 * 24 * 60 * 60 * 1000) {
+
+        document.getElementById("months").parentElement.style.display = "none";
+        document.getElementById("weeks").parentElement.style.display = "none";
+
+        document.getElementById("days").parentElement.style.display = "flex";
+        document.getElementById("hours-container").style.display = "flex";
+        document.getElementById("minutes-container").style.display = "flex";
+        document.getElementById("seconds-container").style.display = "flex";
+
+        const days = Math.floor(
+            distance / (1000 * 60 * 60 * 24)
+        );
+
+        const hours = Math.floor(
+            (distance / (1000 * 60 * 60)) % 24
+        );
+
+        const minutes = Math.floor(
+            (distance / (1000 * 60)) % 60
+        );
+
+        const seconds = Math.floor(
+            (distance / 1000) % 60
+        );
+
+        document.getElementById("days").textContent = days;
+        document.getElementById("hours").textContent = hours;
+        document.getElementById("minutes").textContent = minutes;
+        document.getElementById("seconds").textContent = seconds;
+
+    } else {
+
+        // More than 1 week remaining
+        document.getElementById("months").parentElement.style.display = "flex";
+        document.getElementById("weeks").parentElement.style.display = "flex";
+        document.getElementById("days").parentElement.style.display = "flex";
+
+        document.getElementById("hours-container").style.display = "none";
+        document.getElementById("minutes-container").style.display = "none";
+        document.getElementById("seconds-container").style.display = "none";
+
+        let months =
+            (weddingDate.getFullYear() - now.getFullYear()) * 12 +
+            (weddingDate.getMonth() - now.getMonth());
+
+        let monthDate = new Date(now);
+        monthDate.setMonth(monthDate.getMonth() + months);
+
+        if (monthDate > weddingDate) {
+            months--;
+
+            monthDate = new Date(now);
+            monthDate.setMonth(monthDate.getMonth() + months);
+        }
+
+        const remainingMilliseconds = weddingDate - monthDate;
+
+        const remainingDays = Math.floor(
+            remainingMilliseconds / (1000 * 60 * 60 * 24)
+        );
+
+        const weeks = Math.floor(remainingDays / 7);
+        const days = remainingDays % 7;
+
+        document.getElementById("months").textContent = months;
+        document.getElementById("weeks").textContent = weeks;
+        document.getElementById("days").textContent = days;
+    }
+}
+
+updateCountdown();
+setInterval(updateCountdown, 1000);
+</script>
+
+<script>
+    const themeToggle = document.getElementById("theme-toggle");
+    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
+
+    function applyTheme(theme) {
+        if (theme === "dark") {
+            document.body.classList.add("dark-mode");
+            themeToggle.textContent = "☀️";
+        } else {
+            document.body.classList.remove("dark-mode");
+            themeToggle.textContent = "🌙";
+        }
+        if (window.weddingMap) {
+            window.weddingMap.setOptions({
+                styles: theme === "dark" ? darkMapStyles : []
+            });
+        }
+    }
+
+    // Check if the visitor has previously chosen a theme
+    const savedTheme = localStorage.getItem("wedding-theme");
+
+    if (savedTheme) {
+        // Use their saved preference
+        applyTheme(savedTheme);
+    } else {
+        // Otherwise follow their system setting
+        applyTheme(systemTheme.matches ? "dark" : "light");
+    }
+
+    // Allow the visitor to manually switch themes
+    themeToggle.addEventListener("click", function () {
+        const isDark = document.body.classList.contains("dark-mode");
+        const newTheme = isDark ? "light" : "dark";
+
+        applyTheme(newTheme);
+
+        // Remember their choice
+        localStorage.setItem("wedding-theme", newTheme);
+    });
+
+    // If they haven't manually selected a theme,
+    // follow changes to their system setting
+    systemTheme.addEventListener("change", function (event) {
+        if (!localStorage.getItem("wedding-theme")) {
+            applyTheme(event.matches ? "dark" : "light");
+        }
+    });
+</script>
+    </body>
+    </html>
