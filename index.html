@@ -770,6 +770,14 @@
             familyInvite: "Family invite",
             checkAll: "Check all",
             cannotAttend: "We cannot attend",
+            familyUnable: "Your family is marked as unable to attend.<br>You can switch this off to select attendees.",
+            familyAttending: "These family members are attending.<br>Uncheck anyone who cannot make it.",
+            familySelect: "Select the family members who will attend, or choose \"We cannot attend\".",
+            savingRsvp: "<strong>Just a sec!</strong> We are saving your family RSVP.",
+            existingRsvpBy: "<strong>This family already RSVP'd by {{name}}.</strong>",
+            attendingSummary: "Attending: {{names}}",
+            notAttendingSummary: "Not attending: {{names}}",
+            editRsvp: "<em>If you want to change your RSVP, update the selections below.</em>",
             anythingToShare: "Anything you'd like to share?",
             optionalNote: "Optional note",
             submit: "Submit",
@@ -815,6 +823,14 @@
             familyInvite: "Invitación familiar",
             checkAll: "Seleccionar todos",
             cannotAttend: "No podemos asistir",
+            familyUnable: "Tu familia está marcada como que no puede asistir.<br>Puedes desactivar esto para seleccionar asistentes.",
+            familyAttending: "Estos miembros de la familia asistirán.<br>Desmarca a quienes no puedan asistir.",
+            familySelect: "Selecciona los miembros de la familia que asistirán o elige \"No podemos asistir\".",
+            savingRsvp: "<strong>¡Un momento!</strong> Estamos guardando la confirmación de asistencia de tu familia.",
+            existingRsvpBy: "<strong>Esta familia ya confirmó su asistencia por medio de {{name}}.</strong>",
+            attendingSummary: "Asistirán: {{names}}",
+            notAttendingSummary: "No asistirán: {{names}}",
+            editRsvp: "<em>Si deseas cambiar tu confirmación, actualiza las selecciones a continuación.</em>",
             submit: "Enviar",
             anythingToShare: "¿Hay algo que te gustaría compartir?",
             optionalNote: "Nota opcional",
@@ -827,6 +843,17 @@
 
     let currentLanguage = localStorage.getItem("wedding-language") || "en";
     window.currentLanguage = currentLanguage;
+
+    window.rsvpText = function (key, replacements) {
+        const dictionary = translations[window.currentLanguage] || translations.en;
+        let text = dictionary[key] || key;
+
+        Object.keys(replacements || {}).forEach(function (placeholder) {
+            text = text.replace(new RegExp("{{" + placeholder + "}}", "g"), replacements[placeholder]);
+        });
+
+        return text;
+    };
 
     function applyLanguage(language) {
         const dictionary = translations[language] || translations.en;

@@ -127,9 +127,10 @@
 
     var generateMarkup = function(calendars, clazz, calendarId) {
         var result = document.createElement('div');
+        var addToCalendarLabel = window.currentLanguage === 'es' ? 'Agregar al calendario' : 'Add to Calendar';
 
         result.innerHTML = '<label id="add-to-calendar-label" for="checkbox-for-' +
-            calendarId + '" class="btn btn-fill btn-small"><i class="fa fa-calendar"></i>&nbsp;&nbsp; Add to Calendar</label>';
+            calendarId + '" class="btn btn-fill btn-small"><i class="fa fa-calendar"></i>&nbsp;&nbsp; ' + addToCalendarLabel + '</label>';
         result.innerHTML += '<input name="add-to-calendar-checkbox" class="add-to-calendar-checkbox" id="checkbox-for-' + calendarId + '" type="checkbox">';
 
         Object.keys(calendars).forEach(function(services) {

@@ -217,16 +217,16 @@ function updateFamilySelectionState(family) {
     }).join('|'));
 
     if (cannotAttend) {
-        $('#family-status-text').html('Your family is marked as unable to attend.<br>You can switch this off to select attendees.');
+        $('#family-status-text').html(window.rsvpText('familyUnable'));
         $('#submit-rsvp-btn').prop('disabled', false);
         return;
     }
 
     if (checkedNames.length > 0) {
-        $('#family-status-text').html('These family members are attending.<br>Uncheck anyone who cannot make it.');
+        $('#family-status-text').html(window.rsvpText('familyAttending'));
         $('#submit-rsvp-btn').prop('disabled', false);
     } else {
-        $('#family-status-text').text('Select the family members who will attend, or choose "We cannot attend".');
+        $('#family-status-text').html(window.rsvpText('familySelect'));
         $('#submit-rsvp-btn').prop('disabled', true);
     }
 }
@@ -265,7 +265,7 @@ function renderFamilyMatch(family) {
         $('#cannot-attend-btn').toggleClass('btn-accent', family.cannotAttend).toggleClass('btn-default', !family.cannotAttend);
     } else {
         $('#family-status-row').hide();
-        familyStatusText.text('Select the family members who will attend, or choose "We cannot attend".');
+        familyStatusText.html(window.rsvpText('familySelect'));
     }
 
     $('#family-members-list input').prop('disabled', false);
@@ -273,15 +273,21 @@ function renderFamilyMatch(family) {
 
     if (hasExistingRsvp) {
         var existingRsvpLines = [
-            '<strong>This family already RSVP\'d by ' + escapeHtml(family.submittedBy || 'another guest') + '.</strong>'
+            window.rsvpText('existingRsvpBy', {
+                name: escapeHtml(family.submittedBy || 'another guest')
+            })
         ];
         if (family.attendingMembers && family.attendingMembers.length) {
-            existingRsvpLines.push('Attending: ' + escapeHtml(family.attendingMembers.join(', ')));
+            existingRsvpLines.push(window.rsvpText('attendingSummary', {
+                names: escapeHtml(family.attendingMembers.join(', '))
+            }));
         }
         if (family.notAttendingMembers && family.notAttendingMembers.length) {
-            existingRsvpLines.push('Not attending: ' + escapeHtml(family.notAttendingMembers.join(', ')));
+            existingRsvpLines.push(window.rsvpText('notAttendingSummary', {
+                names: escapeHtml(family.notAttendingMembers.join(', '))
+            }));
         }
-        existingRsvpLines.push('<em>If you want to change your RSVP, update the selections below.</em>');
+        existingRsvpLines.push(window.rsvpText('editRsvp'));
         existingRsvpStatusText.html(existingRsvpLines.join('<br>'));
     }
 
@@ -618,7 +624,7 @@ $(document).ready(function () {
             return;
         }
 
-        $('#alert-wrapper').html(alert_markup('info', '<strong>Just a sec!</strong> We are saving your family RSVP.'));
+        $('#alert-wrapper').html(alert_markup('info', window.rsvpText('savingRsvp')));
 
         family.status = 'confirmed';
         family.submittedBy = guestName;
