@@ -11,6 +11,27 @@
 
 }
 
+.hero .hero-content {
+    position: static !important;
+}
+
+.hero > .container {
+    position: static !important;
+}
+
+.hero .hero-content {
+    z-index: 3;
+}
+
+.hero > .hero-logo {
+    position: absolute;
+    top: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    margin-top: 0 !important;
+}
+
 @media screen and (max-width: 1024px) {
     .hero .hero-content {
         padding-top: 50%;
@@ -307,7 +328,13 @@
 
 @media screen and (max-width: 640px) {
     .hero .hero-content {
-        padding-top: 100%;
+        padding-top: 0 !important;
+    }
+
+    .hero > .hero-logo {
+        top: 20%;
+        width: 80% !important;
+        margin-top: 0 !important;
     }
 
     #eng-pics .col-md-2 {
@@ -355,12 +382,8 @@
 }
 
 @media screen and (max-width: 480px) {
-    .hero .hero-content {
-        padding-top: 110%;
-    }
-    
-    .hero .hero-content img {
-        width: 65%;
+    .hero > .hero-logo {
+        top: 20% !important;
     }
 
     .hero .btn {
@@ -419,10 +442,6 @@
 }
 
 @media screen and (max-width: 320px) {
-    .hero .hero-content {
-        padding-top: 130%;
-    }
-
     .rsvp {
         padding-top: 20px;
     }
