@@ -1206,7 +1206,7 @@ Responsive / Mobile
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 991px) {
 
   #map-canvas {
     height: 350px;
@@ -1248,6 +1248,7 @@ Responsive / Mobile
   .events .rightcol h5 {
     padding-left: 0;
     padding-right: 0;
+    margin-left: 0;
     text-align: center;
   }
 
@@ -1263,6 +1264,27 @@ Responsive / Mobile
     margin-top: 5px;
   }
 
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  .events .leftcol,
+  .events .rightcol {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  .events .leftcol h5,
+  .events .rightcol h5 {
+    margin-left: 0;
+    padding-left: 0;
+    padding-right: 0;
+    text-align: left;
+    width: 220px;
+    max-width: 100%;
+  }
 }
 
 #events h3,
