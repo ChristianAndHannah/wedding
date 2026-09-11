@@ -1,19 +1,34 @@
 ;(function(exports) {
     var MS_IN_MINUTES = 60 * 1000;
 
-    var formatTime = function(date) {
-        return date.toISOString().replace(/-|:|\.\d+/g, '');
+    var formatTime = function(date, timeZone) {
+        var parts = new Intl.DateTimeFormat('en-US', {
+            timeZone: timeZone,
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        }).formatToParts(date).reduce(function(values, part) {
+            values[part.type] = part.value;
+            return values;
+        }, {});
+
+        return parts.year + parts.month + parts.day + 'T' +
+            (parts.hour === '24' ? '00' : parts.hour) + parts.minute + parts.second;
     };
 
     var calculateEndTime = function(event) {
         return event.end ?
-            formatTime(event.end) :
-            formatTime(new Date(event.start.getTime() + (event.duration * MS_IN_MINUTES)));
+            formatTime(event.end, event.timezone) :
+            formatTime(new Date(event.start.getTime() + (event.duration * MS_IN_MINUTES)), event.timezone);
     };
 
     var calendarGenerators = {
         google: function(event) {
-            var startTime = formatTime(event.start);
+            var startTime = formatTime(event.start, event.timezone);
             var endTime = calculateEndTime(event);
 
             var href = encodeURI([
@@ -22,12 +37,14 @@
                 '&text=' + (event.title || ''),
                 '&dates=' + (startTime || ''),
                 '/' + (endTime || ''),
+                '&ctz=' + encodeURIComponent(event.timezone || ''),
                 '&details=' + (event.description || ''),
                 '&location=' + (event.address || ''),
                 '&sprop=&sprop=name:'
             ].join(''));
+            var googleCalendarLabel = window.rsvpText ? window.rsvpText('googleCalendar') : 'Google Calendar';
             return '<a class="icon-google" target="_blank" href="' +
-                href + '">Google Calendar</a>';
+                href + '">' + googleCalendarLabel + '</a>';
         },
 
         yahoo: function(event) {
@@ -47,8 +64,7 @@
             var yahooEventDuration = yahooHourDuration + yahooMinuteDuration;
 
             // Remove timezone from event time
-            var st = formatTime(new Date(event.start - (event.start.getTimezoneOffset() *
-                MS_IN_MINUTES))) || '';
+            var st = formatTime(event.start, event.timezone) || '';
 
             var href = encodeURI([
                 'http://calendar.yahoo.com/?v=60&view=d&type=20',
@@ -59,12 +75,13 @@
                 '&in_loc=' + (event.address || '')
             ].join(''));
 
+            var yahooCalendarLabel = window.rsvpText ? window.rsvpText('yahooCalendar') : 'Yahoo! Calendar';
             return '<a class="icon-yahoo" target="_blank" href="' +
-                href + '">Yahoo! Calendar</a>';
+                href + '">' + yahooCalendarLabel + '</a>';
         },
 
         ics: function(event, eClass, calendarName) {
-            var startTime = formatTime(event.start);
+            var startTime = formatTime(event.start, event.timezone);
             var endTime = calculateEndTime(event);
 
             var href = encodeURI(
@@ -73,16 +90,20 @@
                     'VERSION:2.0',
                     'BEGIN:VEVENT',
                     'URL:' + document.URL,
-                    'DTSTART:' + (startTime || ''),
-                    'DTEND:' + (endTime || ''),
+                    'DTSTART;TZID=' + (event.timezone || 'UTC') + ':' + (startTime || ''),
+                    'DTEND;TZID=' + (event.timezone || 'UTC') + ':' + (endTime || ''),
                     'SUMMARY:' + (event.title || ''),
                     'DESCRIPTION:' + (event.description || ''),
                     'LOCATION:' + (event.address || ''),
                     'END:VEVENT',
                     'END:VCALENDAR'].join('\n'));
 
+            var calendarLabel = calendarName + ' Calendar';
+            if (window.rsvpText) {
+                calendarLabel = window.rsvpText(calendarName === 'iCal' ? 'icalCalendar' : 'outlookCalendar');
+            }
             return '<a class="' + eClass + '" target="_blank" href="' +
-                href + '">' + calendarName + ' Calendar</a>';
+                href + '">' + calendarLabel + '</a>';
         },
 
         ical: function(event) {
@@ -127,7 +148,7 @@
 
     var generateMarkup = function(calendars, clazz, calendarId) {
         var result = document.createElement('div');
-        var addToCalendarLabel = window.currentLanguage === 'es' ? 'Agregar al calendario' : 'Add to Calendar';
+        var addToCalendarLabel = window.rsvpText ? window.rsvpText('addToCalendar') : 'Add to Calendar';
 
         result.innerHTML = '<label id="add-to-calendar-label" for="checkbox-for-' +
             calendarId + '" class="btn btn-fill btn-small"><i class="fa fa-calendar"></i>&nbsp;&nbsp; ' + addToCalendarLabel + '</label>';

@@ -506,23 +506,24 @@ $(document).ready(function () {
         },
         data: {
             // Event title
-            title: "Christian and Hannah's Wedding",
+            title: window.rsvpText('calendarTitle'),
+            timezone: 'America/Denver',
 
             // Event start date
-            start: new Date('Apr 10, 2027 6:00'),
+            start: new Date('2027-04-10T18:00:00-06:00'),
 
             // Event duration (IN MINUTES)
             // duration: 120,
 
             // You can also choose to set an end time
             // If an end time is set, this will take precedence over duration
-            end: new Date('Apr 10, 2027 10:30'),
+            end: new Date('2027-04-10T22:30:00-06:00'),
 
             // Event Address
             address: '14741 Allemands Ave, El Paso, TX 79928',
 
             // Event Description
-            description: "We can't wait to see you on our big day."
+            description: window.rsvpText('calendarDescription')
         }
     });
 
