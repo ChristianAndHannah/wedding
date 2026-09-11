@@ -464,7 +464,7 @@
 @media screen and (max-width: 991px) {
     #eng-pics .mobile-gallery-gap {
         display: block;
-        margin-top: 8px !important;
+        margin-top: 0 !important;
     }
 
     #eng-pics .container-fluid > .row + .row {
@@ -491,13 +491,6 @@
         margin: 0 !important;
     }
 
-    #eng-pics .container-fluid > .row + .row > .col-md-2:first-child > a + a {
-        margin-top: 10px !important;
-    }
-
-    #eng-pics .container-fluid > .row + .row > .col-md-2:not(:first-child) > a:first-child {
-        margin-top: 8px !important;
-    }
 }
 
 @media screen and (min-width: 992px) {
