@@ -1,9 +1,21 @@
-var RSVP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbySgEuzlBgbBcQBbUkyNIWmfOJjg3b8RUnZ99OvdaM5taYxxaYLI38vSUHKu-e27uwLMg/exec';
+var RSVP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxO9DjNFDCx6HcSSanoYuoLRNceFw0d9SmGWW2XISuTl4ENMQQlO7TKowyrgOsy19ImGw/exec';
 
 var familyGroups = [];
 
 function normalizeName(value) {
     return String(value || '').trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
+function escapeHtml(value) {
+    return String(value || '').replace(/[&<>'"]/g, function (character) {
+        return {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            "'": '&#39;',
+            '"': '&quot;'
+        }[character];
+    });
 }
 
 function splitMemberList(value) {
@@ -63,7 +75,11 @@ function normalizeOneFamily(group) {
         familyName: String(familyName || '').trim(),
         members: dedupeNames(members),
         status: String(group.status || group.rsvp_status || '').trim(),
-        submittedBy: String(group.submitted_by || group.submittedBy || '').trim()
+        submittedBy: String(group.submitted_by || group.submittedBy || '').trim(),
+        attendingMembers: dedupeNames(splitMemberList(group.attending_members || group.attendingMembers)),
+        notAttendingMembers: dedupeNames(splitMemberList(group.not_attending_members || group.notAttendingMembers)),
+        cannotAttend: String(group.cannot_attend || group.cannotAttend || '') === '1',
+        notes: String(group.notes || '').trim()
     };
 }
 
@@ -103,7 +119,11 @@ function normalizeFamilyGroups(rows) {
                 familyName: familyName || familyKey,
                 members: [],
                 status: status || '',
-                submittedBy: submittedBy || ''
+                submittedBy: submittedBy || '',
+                attendingMembers: [],
+                notAttendingMembers: [],
+                cannotAttend: false,
+                notes: ''
             };
         }
 
@@ -118,6 +138,11 @@ function normalizeFamilyGroups(rows) {
         if (submittedBy) {
             byFamily[familyKey].submittedBy = submittedBy;
         }
+
+        byFamily[familyKey].attendingMembers = dedupeNames(splitMemberList(row.attending_members || row.attendingMembers));
+        byFamily[familyKey].notAttendingMembers = dedupeNames(splitMemberList(row.not_attending_members || row.notAttendingMembers));
+        byFamily[familyKey].cannotAttend = String(row.cannot_attend || row.cannotAttend || '') === '1';
+        byFamily[familyKey].notes = String(row.notes || '').trim();
     });
 
     return Object.keys(byFamily).map(function (familyKey) {
@@ -127,7 +152,11 @@ function normalizeFamilyGroups(rows) {
             familyName: group.familyName,
             members: dedupeNames(group.members),
             status: group.status,
-            submittedBy: group.submittedBy || ''
+            submittedBy: group.submittedBy || '',
+            attendingMembers: group.attendingMembers || [],
+            notAttendingMembers: group.notAttendingMembers || [],
+            cannotAttend: group.cannotAttend,
+            notes: group.notes || ''
         };
     });
 }
@@ -152,6 +181,8 @@ function findFamilyByMemberName(name) {
 }
 
 function resetFamilyLookupState() {
+    $('#family-status-row').hide();
+    $('#existing-rsvp-status-text').empty();
     $('#family-selection-row').hide();
     $('#family-match').hide();
     $('#family-id').val('');
@@ -203,18 +234,24 @@ function updateFamilySelectionState(family) {
 function renderFamilyMatch(family) {
     var familyList = $('#family-members-list');
     var familyStatusText = $('#family-status-text');
+    var existingRsvpStatusText = $('#existing-rsvp-status-text');
+    var hasExistingRsvp = family.status === 'confirmed' || family.status === 'declined' || family.submittedBy;
 
     familyList.empty();
     $.each(family.members, function (index, member) {
-        familyList.append('<li style="margin-bottom:8px; text-align:left;"><label style="font-weight:normal; margin-bottom:0;"><input type="checkbox" name="family-member-attending" data-member="' + member + '" /> ' + member + '</label></li>');
+        var isAttending = (family.attendingMembers || []).some(function (attendingMember) {
+            return normalizeName(attendingMember) === normalizeName(member);
+        });
+        familyList.append('<li style="margin-bottom:8px; text-align:left;"><label style="font-weight:normal; margin-bottom:0;"><input type="checkbox" name="family-member-attending" data-member="' + member + '"' + (isAttending ? ' checked' : '') + ' /> ' + member + '</label></li>');
     });
 
     $('#family-id').val(family.familyId);
     $('#family-name').val(family.familyName);
     $('#family-members-input').val(family.members.join('|'));
-    $('#family-cannot-attend').val('0');
-    $('#attending-members-input').val('');
-    $('#not-attending-members-input').val(family.members.join('|'));
+    $('#family-cannot-attend').val(family.cannotAttend ? '1' : '0');
+    $('#attending-members-input').val((family.attendingMembers || []).join('|'));
+    $('#not-attending-members-input').val((family.notAttendingMembers || family.members).join('|'));
+    $('#rsvp-notes').val(family.notes || '');
     $('#family-selection-row').show();
     $('#family-match').show();
     $('#submit-rsvp-btn')
@@ -223,18 +260,30 @@ function renderFamilyMatch(family) {
     $('#check-all-family-btn').removeClass('btn-accent').addClass('btn-default');
     $('#cannot-attend-btn').removeClass('btn-accent').addClass('btn-default');
 
-    if (family.status === 'confirmed') {
-        familyStatusText.text('This family already submitted an RSVP for ' + family.submittedBy + '.');
-        $('#family-selection-row .alert').removeClass('alert-info').addClass('alert-warning');
-        $('#submit-rsvp-btn').prop('disabled', true);
-        $('#family-members-list input').prop('disabled', true);
-        return;
+    if (hasExistingRsvp) {
+        $('#family-status-row').show();
+        $('#cannot-attend-btn').toggleClass('btn-accent', family.cannotAttend).toggleClass('btn-default', !family.cannotAttend);
+    } else {
+        $('#family-status-row').hide();
+        familyStatusText.text('Select the family members who will attend, or choose "We cannot attend".');
     }
 
-    $('#family-selection-row .alert').removeClass('alert-warning').addClass('alert-info');
     $('#family-members-list input').prop('disabled', false);
-    familyStatusText.text('Select the family members who will attend, or choose "We cannot attend".');
-    $('#submit-rsvp-btn').prop('disabled', true);
+    updateFamilySelectionState(family);
+
+    if (hasExistingRsvp) {
+        var existingRsvpLines = [
+            '<strong>This family already RSVP\'d by ' + escapeHtml(family.submittedBy || 'another guest') + '.</strong>'
+        ];
+        if (family.attendingMembers && family.attendingMembers.length) {
+            existingRsvpLines.push('Attending: ' + escapeHtml(family.attendingMembers.join(', ')));
+        }
+        if (family.notAttendingMembers && family.notAttendingMembers.length) {
+            existingRsvpLines.push('Not attending: ' + escapeHtml(family.notAttendingMembers.join(', ')));
+        }
+        existingRsvpLines.push('<em>If you want to change your RSVP, update the selections below.</em>');
+        existingRsvpStatusText.html(existingRsvpLines.join('<br>'));
+    }
 
     $('#family-members-list input[name="family-member-attending"]').on('change', function () {
         $('#family-cannot-attend').val('0');
@@ -564,11 +613,6 @@ $(document).ready(function () {
             return;
         }
 
-        if (family.status === 'confirmed') {
-            $('#alert-wrapper').html(alert_markup('warning', '<strong>Already submitted.</strong> This family has already RSVP\'d.'));
-            return;
-        }
-
         if (!cannotAttend && attendingNames.length < 1) {
             $('#alert-wrapper').html(alert_markup('danger', '<strong>Sorry!</strong> Please select at least one attendee or choose "We cannot attend".'));
             return;
@@ -594,7 +638,8 @@ $(document).ready(function () {
             invite_code: family.familyId,
             submitted_by: guestName,
             status: cannotAttend ? 'declined' : 'confirmed',
-            notes: noteValue
+            notes: noteValue,
+            update_existing: family.status === 'confirmed' || family.status === 'declined' ? '1' : '0'
         };
 
         $.post(RSVP_SCRIPT_URL, data)
