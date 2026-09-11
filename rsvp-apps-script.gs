@@ -159,7 +159,7 @@ function updateInviteStatus(familyId, guestName, attendingMembers, cannotAttend,
 
   for (var i = 1; i < values.length; i++) {
     if (String(values[i][idIndex] || "").trim() !== familyId) continue;
-    var status = cannotAttend ? "not_attending" : "pending";
+    var status = "not_attending";
     splitMemberNames(values[i][membersIndex]).forEach(function (member) {
       if (attending[normalizeName(member)]) status = "attending";
     });
@@ -176,7 +176,7 @@ function doPost(e) {
     var familyId = String(params.family_id || "").trim();
     var attendingMembers = splitMemberNames(params.attending_members || "");
     var notAttendingMembers = splitMemberNames(params.not_attending_members || "");
-    var cannotAttend = String(params.cannot_attend || "0") === "1";
+    var cannotAttend = String(params.cannot_attend || "0") === "1" || attendingMembers.length === 0;
     var rsvpCount = parseInt(params.rsvp_count || 0, 10);
     var family = buildFamilyMap()[familyId];
     if (!guestName || !family) return jsonError("Missing or invalid family information.");
@@ -201,7 +201,9 @@ function doPost(e) {
     };
     upsertResponse(parameters);
     updateInviteStatus(familyId, guestName, attendingMembers, cannotAttend, parameters.notes);
-    MailApp.sendEmail({ to: TO_ADDRESS, subject: "A family RSVP was updated", htmlBody: formatMailBody(parameters) });
+
+    // Email delivery can take several seconds and should not block the RSVP response.
+    // Use a separate time-based trigger or a sheet notification for email alerts.
     return ContentService.createTextOutput(JSON.stringify({ result: "success", data: parameters }))
       .setMimeType(ContentService.MimeType.JSON);
   } catch (error) {
