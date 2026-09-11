@@ -509,14 +509,14 @@ $(document).ready(function () {
             title: "Christian and Hannah's Wedding",
 
             // Event start date
-            start: new Date('Apr 10, 2027 5:00'),
+            start: new Date('Apr 10, 2027 6:00'),
 
             // Event duration (IN MINUTES)
             // duration: 120,
 
             // You can also choose to set an end time
             // If an end time is set, this will take precedence over duration
-            end: new Date('Apr 10, 2027 9:00'),
+            end: new Date('Apr 10, 2027 10:30'),
 
             // Event Address
             address: '14741 Allemands Ave, El Paso, TX 79928',
