@@ -31,7 +31,9 @@ function buildFamilyMap() {
 
   var values = sheet.getDataRange().getValues();
   if (!values.length) return {};
-  var headers = sheetHeaders(sheet);
+  var headers = values[0].map(function (header) {
+    return String(header).trim().toLowerCase();
+  });
   var idIndex = headers.indexOf("family_id");
   var nameIndex = headers.indexOf("family_name");
   var membersIndex = headers.indexOf("members");
@@ -67,7 +69,9 @@ function responseRecords() {
   if (!sheet) throw new Error("The responses sheet is missing.");
   var values = sheet.getDataRange().getValues();
   if (values.length < 2) return {};
-  var headers = sheetHeaders(sheet);
+  var headers = values[0].map(function (header) {
+    return String(header).trim().toLowerCase();
+  });
   var idIndex = headers.indexOf("family_id");
   var records = {};
   for (var i = 1; i < values.length; i++) {
@@ -114,7 +118,9 @@ function upsertResponse(parameters) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("responses");
   if (!sheet) throw new Error("The responses sheet is missing.");
   var values = sheet.getDataRange().getValues();
-  var headers = sheetHeaders(sheet);
+  var headers = values[0].map(function (header) {
+    return String(header).trim().toLowerCase();
+  });
   var idIndex = headers.indexOf("family_id");
   var rowNumber = -1;
   for (var i = 1; i < values.length; i++) {
@@ -148,7 +154,9 @@ function upsertResponse(parameters) {
 function updateInviteStatus(familyId, guestName, attendingMembers, cannotAttend, notes) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("invites");
   var values = sheet.getDataRange().getValues();
-  var headers = sheetHeaders(sheet);
+  var headers = values[0].map(function (header) {
+    return String(header).trim().toLowerCase();
+  });
   var idIndex = headers.indexOf("family_id");
   var membersIndex = headers.indexOf("members");
   var statusIndex = headers.indexOf("status");
@@ -163,9 +171,14 @@ function updateInviteStatus(familyId, guestName, attendingMembers, cannotAttend,
     splitMemberNames(values[i][membersIndex]).forEach(function (member) {
       if (attending[normalizeName(member)]) status = "attending";
     });
-    sheet.getRange(i + 1, statusIndex + 1).setValue(status);
-    if (submittedByIndex >= 0) sheet.getRange(i + 1, submittedByIndex + 1).setValue(guestName);
-    if (notesIndex >= 0) sheet.getRange(i + 1, notesIndex + 1).setValue(notes);
+    values[i][statusIndex] = status;
+    if (submittedByIndex >= 0) values[i][submittedByIndex] = guestName;
+    if (notesIndex >= 0) values[i][notesIndex] = notes;
+  }
+
+  if (values.length > 1) {
+    sheet.getRange(2, 1, values.length - 1, values[0].length)
+      .setValues(values.slice(1));
   }
 }
 
@@ -202,8 +215,12 @@ function doPost(e) {
     upsertResponse(parameters);
     updateInviteStatus(familyId, guestName, attendingMembers, cannotAttend, parameters.notes);
 
-    // Email delivery can take several seconds and should not block the RSVP response.
-    // Use a separate time-based trigger or a sheet notification for email alerts.
+    MailApp.sendEmail({
+      to: TO_ADDRESS,
+      subject: "A family RSVP was updated",
+      htmlBody: formatMailBody(parameters)
+    });
+
     return ContentService.createTextOutput(JSON.stringify({ result: "success", data: parameters }))
       .setMimeType(ContentService.MimeType.JSON);
   } catch (error) {

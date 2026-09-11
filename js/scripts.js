@@ -1,4 +1,4 @@
-var RSVP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzzerFcMfR9spovtgu-N9Z7PqQkRRhdGGl9-w2QPbCMV2kVOobUpXu8xlRLKAePx-h2Fw/exec';
+var RSVP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwCDf-DSd1ZcxYt159yUlgNdn7uBj5pWstVcmIPkjZo4Iv4mOzcY2wT7NxbtgtnHHl4Ig/exec';
 
 var familyGroups = [];
 
@@ -549,6 +549,14 @@ $(document).ready(function () {
 
 
     /********************** RSVP **********************/
+    $('#rsvp-modal').on('shown.bs.modal', function () {
+        var registry = $('#registry');
+
+        if (registry.length) {
+            $('html, body').scrollTop(registry.offset().top - 90);
+        }
+    });
+
     $('#lookup-family-btn').on('click', function (e) {
         e.preventDefault();
 
@@ -569,6 +577,11 @@ $(document).ready(function () {
 
         if (!familyGroups || familyGroups.length === 0) {
             $('#alert-wrapper').html(alert_markup('info', '<strong>Loading family list...</strong> Please wait a moment and try again.'));
+            loadFamilyGroups(function (loaded) {
+                if (loaded) {
+                    $('#lookup-family-btn').trigger('click');
+                }
+            });
             return;
         }
 
