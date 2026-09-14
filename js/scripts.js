@@ -1,4 +1,4 @@
-var RSVP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVW8mLpIneYuVDdjiXSghOvLFn6u7ivgYjw8mS83sVHxrP67P-NgT-V6fl0sbKX3M5QQ/exec';
+var RSVP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwY5VGuPGpxJrGeQ6gYZ06Y12yUlFJWkT-5EZ5trg9u7nTEnEmftoZTHYFFdVnecUS69Q/exec';
 
 var familyGroups = [];
 var familyGroupsRequest = null;
