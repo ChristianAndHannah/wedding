@@ -1,6 +1,12 @@
-var RSVP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwCDf-DSd1ZcxYt159yUlgNdn7uBj5pWstVcmIPkjZo4Iv4mOzcY2wT7NxbtgtnHHl4Ig/exec';
+var RSVP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx1jD9m0n7j3Fv9Am_wzpgJXbUT3T3z6qxE6fI2Mxin-_qQZX0yOacw7sHGY4p-0zChzA/exec';
 
 var familyGroups = [];
+var familyGroupsRequest = null;
+var familyLookupRequest = null;
+var rsvpSubmissionRequest = null;
+var activeFamily = null;
+var FAMILY_GROUPS_CACHE_KEY = 'wedding_family_groups_v1';
+var FAMILY_GROUPS_CACHE_TTL = 5 * 60 * 1000;
 
 function normalizeName(value) {
     return String(value || '').trim().replace(/\s+/g, ' ').toLowerCase();
@@ -161,6 +167,30 @@ function normalizeFamilyGroups(rows) {
     });
 }
 
+function readFamilyGroupsCache() {
+    try {
+        var cached = JSON.parse(window.localStorage.getItem(FAMILY_GROUPS_CACHE_KEY) || 'null');
+        if (!cached || !Array.isArray(cached.data) || Date.now() - cached.savedAt > FAMILY_GROUPS_CACHE_TTL) {
+            return [];
+        }
+
+        return cached.data;
+    } catch (error) {
+        return [];
+    }
+}
+
+function writeFamilyGroupsCache(groups) {
+    try {
+        window.localStorage.setItem(FAMILY_GROUPS_CACHE_KEY, JSON.stringify({
+            savedAt: Date.now(),
+            data: groups
+        }));
+    } catch (error) {
+        // Storage may be unavailable in private browsing or restricted browsers.
+    }
+}
+
 function matchesGuestName(memberName, inputName) {
     var member = normalizeName(memberName);
     var input = normalizeName(inputName);
@@ -190,6 +220,7 @@ function applySavedRsvpToFamily(family, responseData) {
 }
 
 function resetFamilyLookupState() {
+    activeFamily = null;
     $('#family-status-row').hide();
     $('#existing-rsvp-status-text').empty();
     $('#family-selection-row').hide();
@@ -206,6 +237,18 @@ function resetFamilyLookupState() {
     $('#check-all-family-btn').removeClass('btn-accent').addClass('btn-default');
     $('#cannot-attend-btn').removeClass('btn-accent').addClass('btn-default');
     $('#family-members-list').empty();
+}
+
+function setRsvpSubmitDisabled(disabled) {
+    var submitButton = document.getElementById('submit-rsvp-btn');
+    if (!submitButton) {
+        return;
+    }
+
+    submitButton.disabled = disabled;
+    submitButton.style.setProperty('background-color', disabled ? '#9aaa96' : '', 'important');
+    submitButton.style.setProperty('border-color', disabled ? '#9aaa96' : '', 'important');
+    submitButton.style.setProperty('color', disabled ? '#ffffff' : '', 'important');
 }
 
 function updateFamilySelectionState(family) {
@@ -227,20 +270,21 @@ function updateFamilySelectionState(family) {
 
     if (cannotAttend) {
         $('#family-status-text').html(window.rsvpText('familyUnable'));
-        $('#submit-rsvp-btn').prop('disabled', false);
+        setRsvpSubmitDisabled(false);
         return;
     }
 
     if (checkedNames.length > 0) {
         $('#family-status-text').html(window.rsvpText('familyAttending'));
-        $('#submit-rsvp-btn').prop('disabled', false);
+        setRsvpSubmitDisabled(false);
     } else {
         $('#family-status-text').html(window.rsvpText('familyNoneAttending'));
-        $('#submit-rsvp-btn').prop('disabled', false);
+        setRsvpSubmitDisabled(true);
     }
 }
 
 function renderFamilyMatch(family) {
+    activeFamily = family;
     var familyList = $('#family-members-list');
     var familyStatusText = $('#family-status-text');
     var existingRsvpStatusText = $('#existing-rsvp-status-text');
@@ -308,37 +352,92 @@ function renderFamilyMatch(family) {
 }
 
 function loadFamilyGroups(onComplete) {
-    $.ajax({
+    if (familyGroups.length === 0) {
+        familyGroups = readFamilyGroupsCache();
+    }
+
+    if (familyGroups.length > 0) {
+        if (onComplete) {
+            onComplete(true);
+        }
+        return null;
+    }
+
+    if (familyGroupsRequest) {
+        familyGroupsRequest.always(function () {
+            if (onComplete) {
+                onComplete(familyGroups.length > 0);
+            }
+        });
+        return familyGroupsRequest;
+    }
+
+    familyGroupsRequest = $.ajax({
         url: RSVP_SCRIPT_URL + '?action=getInvites&_=' + Date.now(),
         method: 'GET',
         dataType: 'json',
         success: function (response) {
             if (response && response.result === 'success' && Array.isArray(response.data)) {
                 familyGroups = normalizeFamilyGroups(response.data);
+                writeFamilyGroupsCache(familyGroups);
                 if (onComplete) {
                     onComplete(true);
                 }
                 return;
             }
             familyGroups = [];
-            $('#alert-wrapper').html(alert_markup('danger', '<strong>Sorry!</strong> The invite list could not be loaded.'));
             if (onComplete) {
+                $('#alert-wrapper').html(alert_markup('danger', '<strong>Sorry!</strong> The invite list could not be loaded.'));
                 onComplete(false);
             }
         },
         error: function () {
-            familyGroups = [];
-            $('#alert-wrapper').html(alert_markup('danger', '<strong>Sorry!</strong> The invite list could not be loaded.'));
-            if (onComplete) {
-                onComplete(false);
+            if (familyGroups.length === 0) {
+                if (onComplete) {
+                    $('#alert-wrapper').html(alert_markup('danger', '<strong>Sorry!</strong> The invite list could not be loaded.'));
+                    onComplete(false);
+                }
             }
+        },
+        complete: function () {
+            familyGroupsRequest = null;
         }
     });
+
+    return familyGroupsRequest;
+}
+
+function findFamilyRemotely(name, onComplete) {
+    if (familyLookupRequest) {
+        familyLookupRequest.abort();
+    }
+
+    familyLookupRequest = $.ajax({
+        url: RSVP_SCRIPT_URL + '?action=findFamily&name=' + encodeURIComponent(name) + '&_=' + Date.now(),
+        method: 'GET',
+        dataType: 'json'
+    }).done(function (response) {
+        var family = response && response.result === 'success' && response.data
+            ? normalizeOneFamily(response.data)
+            : null;
+        onComplete(family);
+    }).fail(function () {
+        onComplete(null, true);
+    }).always(function () {
+        familyLookupRequest = null;
+    });
+
+    return familyLookupRequest;
+}
+
+function warmRsvpServer() {
+    loadFamilyGroups();
 }
 
 $(document).ready(function () {
-    loadFamilyGroups();
+    familyGroups = readFamilyGroupsCache();
     resetFamilyLookupState();
+    warmRsvpServer();
 
     /***************** Waypoints ******************/
 
@@ -576,11 +675,19 @@ $(document).ready(function () {
         }
 
         if (!familyGroups || familyGroups.length === 0) {
-            $('#alert-wrapper').html(alert_markup('info', '<strong>Loading family list...</strong> Please wait a moment and try again.'));
-            loadFamilyGroups(function (loaded) {
-                if (loaded) {
-                    $('#lookup-family-btn').trigger('click');
+            $('#lookup-family-btn').prop('disabled', true);
+            $('#alert-wrapper').html(alert_markup('info', '<strong>Looking up your invite...</strong> Please wait a moment.'));
+            findFamilyRemotely(guestName, function (family, failed) {
+                $('#lookup-family-btn').prop('disabled', false);
+                if (failed) {
+                    $('#alert-wrapper').html(alert_markup('danger', '<strong>Sorry!</strong> We could not reach the invite list. Please try again.'));
+                    return;
                 }
+                if (!family) {
+                    $('#alert-wrapper').html(alert_markup('danger', '<strong>Sorry!</strong> We could not find that name in our family invite list.'));
+                    return;
+                }
+                renderFamilyMatch(family);
             });
             return;
         }
@@ -610,7 +717,7 @@ $(document).ready(function () {
         checkboxes.prop('checked', !areChecked);
         $('#family-cannot-attend').val('0');
         $('#cannot-attend-btn').removeClass('btn-accent').addClass('btn-default');
-        updateFamilySelectionState(findFamilyByMemberName($('#guest_name').val()));
+        updateFamilySelectionState(activeFamily || findFamilyByMemberName($('#guest_name').val()));
     });
 
     $('#cannot-attend-btn').on('click', function () {
@@ -620,21 +727,25 @@ $(document).ready(function () {
         if (isDeclining) {
             $('#family-cannot-attend').val('0');
             $(this).removeClass('btn-accent').addClass('btn-default');
-            updateFamilySelectionState(findFamilyByMemberName($('#guest_name').val()));
+            updateFamilySelectionState(activeFamily || findFamilyByMemberName($('#guest_name').val()));
             return;
         }
 
         checkboxes.prop('checked', false);
         $('#family-cannot-attend').val('1');
         $(this).removeClass('btn-default').addClass('btn-accent');
-        updateFamilySelectionState(findFamilyByMemberName($('#guest_name').val()));
+        updateFamilySelectionState(activeFamily || findFamilyByMemberName($('#guest_name').val()));
     });
 
     $('#rsvp-form').on('submit', function (e) {
         e.preventDefault();
 
+        if (rsvpSubmissionRequest) {
+            return;
+        }
+
         var guestName = $('#guest_name').val();
-        var family = findFamilyByMemberName(guestName);
+        var family = activeFamily || findFamilyByMemberName(guestName);
         var cannotAttend = $('#family-cannot-attend').val() === '1';
         var attendingNames = $('#attending-members-input').val() ? $('#attending-members-input').val().split('|').filter(Boolean) : [];
         var notAttendingNames = $('#not-attending-members-input').val() ? $('#not-attending-members-input').val().split('|').filter(Boolean) : [];
@@ -654,6 +765,8 @@ $(document).ready(function () {
         cannotAttend = cannotAttend || attendingNames.length === 0;
 
         $('#alert-wrapper').html(alert_markup('info', window.rsvpText('savingRsvp')));
+
+        setRsvpSubmitDisabled(true);
 
         var hadExistingRsvp = family.status === 'confirmed' || family.status === 'declined' || !!family.submittedBy;
         $('#extras-input').val(cannotAttend ? 0 : attendingNames.length);
@@ -677,11 +790,17 @@ $(document).ready(function () {
             update_existing: hadExistingRsvp ? '1' : '0'
         };
 
-        $.post(RSVP_SCRIPT_URL, data)
+        rsvpSubmissionRequest = $.ajax({
+            url: RSVP_SCRIPT_URL,
+            method: 'POST',
+            data: data,
+            dataType: 'json',
+            timeout: 15000
+        })
             .done(function (response) {
-                console.log(response);
-                if (response && response.result === 'error') {
-                    $('#alert-wrapper').html(alert_markup('danger', response.message));
+                if (!response || response.result !== 'success') {
+                    var message = response && response.message ? response.message : 'The RSVP could not be saved. Please try again.';
+                    $('#alert-wrapper').html(alert_markup('danger', message));
                 } else {
                     if (response && response.data) {
                         applySavedRsvpToFamily(family, response.data);
@@ -692,8 +811,13 @@ $(document).ready(function () {
                 }
             })
             .fail(function (response) {
-                console.log(response);
                 $('#alert-wrapper').html(alert_markup('danger', '<strong>Sorry!</strong> There is some issue with the server.'));
+            })
+            .always(function () {
+                rsvpSubmissionRequest = null;
+                if ($('#family-id').val()) {
+                    setRsvpSubmitDisabled(false);
+                }
             });
     });
 

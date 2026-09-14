@@ -1,4 +1,7 @@
 var TO_ADDRESS = "christian.hannah.2027@gmail.com";
+var INVITE_CACHE_KEY = "rsvp_invites_v1";
+var INVITE_CACHE_SECONDS = 30;
+var RSVP_LOOKUP_SHEET = "rsvp_lookup";
 
 function normalizeName(value) {
   return String(value || "").trim().replace(/\s+/g, " ").toLowerCase();
@@ -17,6 +20,11 @@ function jsonError(message) {
     result: "error",
     message: message
   })).setMimeType(ContentService.MimeType.JSON);
+}
+
+function jsonResponse(payload) {
+  return ContentService.createTextOutput(JSON.stringify(payload))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 function sheetHeaders(sheet) {
@@ -85,29 +93,188 @@ function responseRecords() {
   return records;
 }
 
+function lookupRows() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(RSVP_LOOKUP_SHEET);
+  if (!sheet || sheet.getLastRow() < 2) return null;
+
+  var values = sheet.getDataRange().getValues();
+  var headers = values[0].map(function (header) {
+    return String(header).trim().toLowerCase();
+  });
+  var required = ["family_id", "family_name", "members"];
+  if (required.some(function (header) { return headers.indexOf(header) < 0; })) return null;
+
+  return values.slice(1).map(function (row) {
+    var record = {};
+    headers.forEach(function (header, index) {
+      record[header] = row[index];
+    });
+    var status = String(record.status || "pending").toLowerCase();
+    return {
+      familyId: String(record.family_id || "").trim(),
+      familyName: String(record.family_name || "").trim(),
+      members: splitMemberNames(record.members),
+      status: status === "not_attending" ? "declined" : status,
+      submittedBy: String(record.submitted_by || "").trim(),
+      attending_members: String(record.attending_members || ""),
+      not_attending_members: String(record.not_attending_members || ""),
+      cannot_attend: status === "declined" ? "1" : "0",
+      notes: String(record.notes || "")
+    };
+  }).filter(function (row) {
+    return row.familyId;
+  });
+}
+
+function refreshRsvpLookup() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = spreadsheet.getSheetByName(RSVP_LOOKUP_SHEET) || spreadsheet.insertSheet(RSVP_LOOKUP_SHEET);
+  var families = buildFamilyMap();
+  var records = responseRecords();
+  var rows = Object.keys(families).map(function (familyId) {
+    var family = families[familyId];
+    var response = records[familyId] || {};
+    return [
+      family.familyId,
+      family.familyName,
+      family.members.join("|"),
+      response.status || family.status || "pending",
+      response.submitted_by || "",
+      response.attending_members || "",
+      response.not_attending_members || "",
+      response.notes || ""
+    ];
+  });
+  var headers = ["family_id", "family_name", "members", "status", "submitted_by", "attending_members", "not_attending_members", "notes"];
+  sheet.clearContents();
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+  if (rows.length) sheet.getRange(2, 1, rows.length, headers.length).setValues(rows);
+  CacheService.getScriptCache().remove(INVITE_CACHE_KEY);
+  return rows.length;
+}
+
+function updateRsvpLookup(parameters) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(RSVP_LOOKUP_SHEET);
+  if (!sheet || sheet.getLastRow() < 1) return;
+
+  var values = sheet.getDataRange().getValues();
+  var headers = values[0].map(function (header) {
+    return String(header).trim().toLowerCase();
+  });
+  var idIndex = headers.indexOf("family_id");
+  if (idIndex < 0) return;
+
+  var row = headers.map(function (header) {
+    var valuesByHeader = {
+      family_id: parameters.family_id,
+      family_name: parameters.family_name,
+      members: parameters.family_members,
+      status: parameters.status,
+      submitted_by: parameters.name,
+      attending_members: parameters.attending_members,
+      not_attending_members: parameters.not_attending_members,
+      notes: parameters.notes
+    };
+    return valuesByHeader[header] === undefined ? "" : valuesByHeader[header];
+  });
+  var rowNumber = -1;
+  for (var i = 1; i < values.length; i++) {
+    if (String(values[i][idIndex] || "").trim() === parameters.family_id) {
+      rowNumber = i + 1;
+      break;
+    }
+  }
+  if (rowNumber < 0) sheet.appendRow(row);
+  else sheet.getRange(rowNumber, 1, 1, row.length).setValues([row]);
+}
+
+function findFamilyForSubmission(familyId) {
+  var rows = lookupRows();
+  if (rows) {
+    return rows.filter(function (family) {
+      return family.familyId === familyId;
+    })[0] || null;
+  }
+  return buildFamilyMap()[familyId] || null;
+}
+
 function doGet(e) {
   try {
-    if (!e || !e.parameter || e.parameter.action !== "getInvites") return jsonError("Unknown action.");
-    var families = buildFamilyMap();
-    var records = responseRecords();
-    var data = Object.keys(families).map(function (familyId) {
-      var family = families[familyId];
-      var response = records[familyId] || {};
-      var responseStatus = String(response.status || family.status || "pending").toLowerCase();
-      return {
-        familyId: family.familyId,
-        familyName: family.familyName,
-        members: family.members,
-        status: responseStatus === "declined" || responseStatus === "not_attending" ? "declined" : responseStatus,
-        submittedBy: String(response.submitted_by || "").trim(),
-        attending_members: String(response.attending_members || ""),
-        not_attending_members: String(response.not_attending_members || ""),
-        cannot_attend: responseStatus === "declined" ? "1" : "0",
-        notes: String(response.notes || "")
-      };
-    });
-    return ContentService.createTextOutput(JSON.stringify({ result: "success", data: data }))
-      .setMimeType(ContentService.MimeType.JSON);
+    if (!e || !e.parameter) return jsonError("Unknown action.");
+
+    if (e.parameter.action === "ping") {
+      return jsonResponse({ result: "success" });
+    }
+
+    if (e.parameter.action === "findFamily") {
+      var requestedName = normalizeName(e.parameter.name);
+      if (!requestedName) return jsonError("Please enter your full name.");
+
+      var lookupData = lookupRows();
+      if (lookupData) {
+        var matchingFamily = lookupData.filter(function (family) {
+          return family.members.some(function (member) {
+            return normalizeName(member) === requestedName;
+          });
+        })[0];
+        return jsonResponse({ result: "success", data: matchingFamily || null });
+      }
+
+      var familyMap = buildFamilyMap();
+      var familyIds = Object.keys(familyMap);
+      for (var familyIndex = 0; familyIndex < familyIds.length; familyIndex++) {
+        var candidate = familyMap[familyIds[familyIndex]];
+        if (candidate.members.some(function (member) {
+          return normalizeName(member) === requestedName;
+        })) {
+          return jsonResponse({
+            result: "success",
+            data: {
+              familyId: candidate.familyId,
+              familyName: candidate.familyName,
+              members: candidate.members,
+              status: candidate.status,
+              submittedBy: "",
+              attending_members: "",
+              not_attending_members: "",
+              cannot_attend: candidate.status === "declined" ? "1" : "0",
+              notes: ""
+            }
+          });
+        }
+      }
+      return jsonResponse({ result: "success", data: null });
+    }
+
+    if (e.parameter.action !== "getInvites") return jsonError("Unknown action.");
+    var cache = CacheService.getScriptCache();
+    var cached = cache.get(INVITE_CACHE_KEY);
+    if (cached) return ContentService.createTextOutput(cached).setMimeType(ContentService.MimeType.JSON);
+
+    var data = lookupRows();
+    if (!data) {
+      var families = buildFamilyMap();
+      var records = responseRecords();
+      data = Object.keys(families).map(function (familyId) {
+        var family = families[familyId];
+        var response = records[familyId] || {};
+        var responseStatus = String(response.status || family.status || "pending").toLowerCase();
+        return {
+          familyId: family.familyId,
+          familyName: family.familyName,
+          members: family.members,
+          status: responseStatus === "declined" || responseStatus === "not_attending" ? "declined" : responseStatus,
+          submittedBy: String(response.submitted_by || "").trim(),
+          attending_members: String(response.attending_members || ""),
+          not_attending_members: String(response.not_attending_members || ""),
+          cannot_attend: responseStatus === "declined" ? "1" : "0",
+          notes: String(response.notes || "")
+        };
+      });
+    }
+    var payload = JSON.stringify({ result: "success", data: data });
+    cache.put(INVITE_CACHE_KEY, payload, INVITE_CACHE_SECONDS);
+    return ContentService.createTextOutput(payload).setMimeType(ContentService.MimeType.JSON);
   } catch (error) {
     Logger.log(error);
     return jsonError("Could not load invites.");
@@ -176,14 +343,57 @@ function updateInviteStatus(familyId, guestName, attendingMembers, cannotAttend,
     if (notesIndex >= 0) values[i][notesIndex] = notes;
   }
 
-  if (values.length > 1) {
-    sheet.getRange(2, 1, values.length - 1, values[0].length)
-      .setValues(values.slice(1));
+  for (var rowIndex = 1; rowIndex < values.length; rowIndex++) {
+    if (String(values[rowIndex][idIndex] || "").trim() === familyId) {
+      sheet.getRange(rowIndex + 1, 1, 1, values[rowIndex].length)
+        .setValues([values[rowIndex]]);
+    }
+  }
+}
+
+function queueRsvpEmail(parameters) {
+  var key = "rsvp_email_" + new Date().getTime() + "_" + Math.floor(Math.random() * 1000000);
+  PropertiesService.getScriptProperties().setProperty(key, JSON.stringify({
+    to: TO_ADDRESS,
+    subject: "A family RSVP was updated",
+    htmlBody: formatMailBody(parameters)
+  }));
+}
+
+function processEmailQueue() {
+  var lock = LockService.getScriptLock();
+  if (!lock.tryLock(1000)) return;
+  try {
+    var properties = PropertiesService.getScriptProperties();
+    var queuedEmails = properties.getProperties();
+    Object.keys(queuedEmails).forEach(function (key) {
+      if (key.indexOf("rsvp_email_") !== 0) return;
+      var email;
+      try {
+        email = JSON.parse(queuedEmails[key]);
+      } catch (error) {
+        properties.deleteProperty(key);
+        return;
+      }
+
+      try {
+        MailApp.sendEmail(email);
+        properties.deleteProperty(key);
+      } catch (error) {
+        Logger.log(error);
+      }
+    });
+  } finally {
+    lock.releaseLock();
   }
 }
 
 function doPost(e) {
+  var lock = LockService.getScriptLock();
+  var lockAcquired = false;
   try {
+    lockAcquired = lock.tryLock(3000);
+    if (!lockAcquired) return jsonError("The RSVP service is busy. Please try again in a moment.");
     var params = e.parameters || {};
     var guestName = String(params.name || "").trim();
     var familyId = String(params.family_id || "").trim();
@@ -191,7 +401,10 @@ function doPost(e) {
     var notAttendingMembers = splitMemberNames(params.not_attending_members || "");
     var cannotAttend = String(params.cannot_attend || "0") === "1" || attendingMembers.length === 0;
     var rsvpCount = parseInt(params.rsvp_count || 0, 10);
-    var family = buildFamilyMap()[familyId];
+    var lookupData = lookupRows();
+    var family = lookupData ? lookupData.filter(function (candidate) {
+      return candidate.familyId === familyId;
+    })[0] : buildFamilyMap()[familyId];
     if (!guestName || !family) return jsonError("Missing or invalid family information.");
     if (!family.members.some(function (member) { return normalizeName(member) === normalizeName(guestName); })) {
       return jsonError("That name does not belong to this family invite.");
@@ -213,19 +426,20 @@ function doPost(e) {
       notes: String(params.notes || "").trim()
     };
     upsertResponse(parameters);
-    updateInviteStatus(familyId, guestName, attendingMembers, cannotAttend, parameters.notes);
+    if (!lookupData) {
+      updateInviteStatus(familyId, guestName, attendingMembers, cannotAttend, parameters.notes);
+    }
+    updateRsvpLookup(parameters);
+    CacheService.getScriptCache().remove(INVITE_CACHE_KEY);
 
-    MailApp.sendEmail({
-      to: TO_ADDRESS,
-      subject: "A family RSVP was updated",
-      htmlBody: formatMailBody(parameters)
-    });
+    queueRsvpEmail(parameters);
 
-    return ContentService.createTextOutput(JSON.stringify({ result: "success", data: parameters }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return jsonResponse({ result: "success", data: parameters });
   } catch (error) {
     Logger.log(error);
     return jsonError("Sorry, there is an issue with the server.");
+  } finally {
+    if (lockAcquired && lock.hasLock()) lock.releaseLock();
   }
 }
 
