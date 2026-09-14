@@ -1,7 +1,7 @@
-var TO_ADDRESS = "christian.hannah.2027@gmail.com";
 var INVITE_CACHE_KEY = "rsvp_invites_v1";
 var INVITE_CACHE_SECONDS = 30;
 var RSVP_LOOKUP_SHEET = "rsvp_lookup";
+var VERBOSE_TIMING_LOGS = false;
 
 function normalizeName(value) {
   return String(value || "").trim().replace(/\s+/g, " ").toLowerCase();
@@ -25,6 +25,29 @@ function jsonError(message) {
 function jsonResponse(payload) {
   return ContentService.createTextOutput(JSON.stringify(payload))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+function createRequestId() {
+  return new Date().getTime().toString(36) + "-" + Math.floor(Math.random() * 1000000).toString(36);
+}
+
+function logTiming(requestId, label, startedAt, requestStartedAt) {
+  if (!VERBOSE_TIMING_LOGS && label !== "total") return;
+  var now = new Date().getTime();
+  Logger.log(JSON.stringify({
+    requestId: requestId,
+    event: label,
+    durationMs: now - startedAt,
+    totalMs: now - requestStartedAt
+  }));
+}
+
+function logRequest(requestId, event, details) {
+  Logger.log(JSON.stringify({
+    requestId: requestId,
+    event: event,
+    details: details || ""
+  }));
 }
 
 function sheetHeaders(sheet) {
@@ -126,6 +149,18 @@ function lookupRows() {
   });
 }
 
+function cachedLookupRows() {
+  var cached = CacheService.getScriptCache().get(INVITE_CACHE_KEY);
+  if (!cached) return null;
+
+  try {
+    var payload = JSON.parse(cached);
+    return payload && Array.isArray(payload.data) ? payload.data : null;
+  } catch (error) {
+    return null;
+  }
+}
+
 function refreshRsvpLookup() {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = spreadsheet.getSheetByName(RSVP_LOOKUP_SHEET) || spreadsheet.insertSheet(RSVP_LOOKUP_SHEET);
@@ -157,8 +192,9 @@ function updateRsvpLookup(parameters) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(RSVP_LOOKUP_SHEET);
   if (!sheet || sheet.getLastRow() < 1) return;
 
-  var values = sheet.getDataRange().getValues();
-  var headers = values[0].map(function (header) {
+  var lastRow = sheet.getLastRow();
+  var lastColumn = sheet.getLastColumn();
+  var headers = sheet.getRange(1, 1, 1, lastColumn).getValues()[0].map(function (header) {
     return String(header).trim().toLowerCase();
   });
   var idIndex = headers.indexOf("family_id");
@@ -178,10 +214,13 @@ function updateRsvpLookup(parameters) {
     return valuesByHeader[header] === undefined ? "" : valuesByHeader[header];
   });
   var rowNumber = -1;
-  for (var i = 1; i < values.length; i++) {
-    if (String(values[i][idIndex] || "").trim() === parameters.family_id) {
-      rowNumber = i + 1;
-      break;
+  if (lastRow > 1) {
+    var idValues = sheet.getRange(2, idIndex + 1, lastRow - 1, 1).getValues();
+    for (var i = 0; i < idValues.length; i++) {
+      if (String(idValues[i][0] || "").trim() === parameters.family_id) {
+        rowNumber = i + 2;
+        break;
+      }
     }
   }
   if (rowNumber < 0) sheet.appendRow(row);
@@ -210,7 +249,7 @@ function doGet(e) {
       var requestedName = normalizeName(e.parameter.name);
       if (!requestedName) return jsonError("Please enter your full name.");
 
-      var lookupData = lookupRows();
+      var lookupData = cachedLookupRows() || lookupRows();
       if (lookupData) {
         var matchingFamily = lookupData.filter(function (family) {
           return family.members.some(function (member) {
@@ -281,10 +320,13 @@ function doGet(e) {
   }
 }
 
-function upsertResponse(parameters) {
+function upsertResponse(parameters, requestId, requestStartedAt) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("responses");
   if (!sheet) throw new Error("The responses sheet is missing.");
+  var readStartedAt = new Date().getTime();
   var values = sheet.getDataRange().getValues();
+  if (requestId) logTiming(requestId, "responses read", readStartedAt, requestStartedAt);
+  var searchStartedAt = new Date().getTime();
   var headers = values[0].map(function (header) {
     return String(header).trim().toLowerCase();
   });
@@ -296,6 +338,7 @@ function upsertResponse(parameters) {
       break;
     }
   }
+  if (requestId) logTiming(requestId, "responses row search", searchStartedAt, requestStartedAt);
 
   var record = {
     timestamp: new Date(),
@@ -314,8 +357,10 @@ function upsertResponse(parameters) {
   var row = headers.map(function (header) {
     return record[header] === undefined ? "" : record[header];
   });
+  var writeStartedAt = new Date().getTime();
   if (rowNumber < 0) sheet.appendRow(row);
   else sheet.getRange(rowNumber, 1, 1, row.length).setValues([row]);
+  if (requestId) logTiming(requestId, rowNumber < 0 ? "responses append" : "responses update", writeStartedAt, requestStartedAt);
 }
 
 function updateInviteStatus(familyId, guestName, attendingMembers, cannotAttend, notes) {
@@ -351,49 +396,25 @@ function updateInviteStatus(familyId, guestName, attendingMembers, cannotAttend,
   }
 }
 
-function queueRsvpEmail(parameters) {
-  var key = "rsvp_email_" + new Date().getTime() + "_" + Math.floor(Math.random() * 1000000);
-  PropertiesService.getScriptProperties().setProperty(key, JSON.stringify({
-    to: TO_ADDRESS,
-    subject: "A family RSVP was updated",
-    htmlBody: formatMailBody(parameters)
-  }));
-}
-
-function processEmailQueue() {
-  var lock = LockService.getScriptLock();
-  if (!lock.tryLock(1000)) return;
-  try {
-    var properties = PropertiesService.getScriptProperties();
-    var queuedEmails = properties.getProperties();
-    Object.keys(queuedEmails).forEach(function (key) {
-      if (key.indexOf("rsvp_email_") !== 0) return;
-      var email;
-      try {
-        email = JSON.parse(queuedEmails[key]);
-      } catch (error) {
-        properties.deleteProperty(key);
-        return;
-      }
-
-      try {
-        MailApp.sendEmail(email);
-        properties.deleteProperty(key);
-      } catch (error) {
-        Logger.log(error);
-      }
-    });
-  } finally {
-    lock.releaseLock();
-  }
-}
-
 function doPost(e) {
+  var requestStartedAt = new Date().getTime();
+  var requestId = createRequestId();
   var lock = LockService.getScriptLock();
   var lockAcquired = false;
+  var stage = "starting";
+  var outcome = "failed";
+  logRequest(requestId, "doPost started");
   try {
+    stage = "acquiring RSVP lock";
+    var lockStartedAt = new Date().getTime();
     lockAcquired = lock.tryLock(3000);
-    if (!lockAcquired) return jsonError("The RSVP service is busy. Please try again in a moment.");
+    logTiming(requestId, "lock", lockStartedAt, requestStartedAt);
+    if (!lockAcquired) {
+      outcome = "busy";
+      logRequest(requestId, "doPost rejected", outcome);
+      return jsonError("The RSVP service is busy. Please try again in a moment.");
+    }
+    stage = "validating RSVP";
     var params = e.parameters || {};
     var guestName = String(params.name || "").trim();
     var familyId = String(params.family_id || "").trim();
@@ -401,17 +422,23 @@ function doPost(e) {
     var notAttendingMembers = splitMemberNames(params.not_attending_members || "");
     var cannotAttend = String(params.cannot_attend || "0") === "1" || attendingMembers.length === 0;
     var rsvpCount = parseInt(params.rsvp_count || 0, 10);
-    var lookupData = lookupRows();
+    var lookupData = cachedLookupRows() || lookupRows();
     var family = lookupData ? lookupData.filter(function (candidate) {
       return candidate.familyId === familyId;
     })[0] : buildFamilyMap()[familyId];
-    if (!guestName || !family) return jsonError("Missing or invalid family information.");
+    if (!guestName || !family) {
+      outcome = "invalid-family";
+      return jsonError("Missing or invalid family information.");
+    }
     if (!family.members.some(function (member) { return normalizeName(member) === normalizeName(guestName); })) {
+      outcome = "invalid-guest";
       return jsonError("That name does not belong to this family invite.");
     }
     if (!cannotAttend && (!rsvpCount || rsvpCount > family.members.length)) {
+      outcome = "invalid-count";
       return jsonError("Please select a valid number of attendees.");
     }
+    logTiming(requestId, "validation", requestStartedAt, requestStartedAt);
 
     var parameters = {
       phone: String(params.phone || "").trim(),
@@ -425,28 +452,29 @@ function doPost(e) {
       status: cannotAttend ? "declined" : "confirmed",
       notes: String(params.notes || "").trim()
     };
-    upsertResponse(parameters);
-    if (!lookupData) {
-      updateInviteStatus(familyId, guestName, attendingMembers, cannotAttend, parameters.notes);
+    stage = "saving RSVP response";
+    var responseWriteStartedAt = new Date().getTime();
+    upsertResponse(parameters, requestId, requestStartedAt);
+    logTiming(requestId, "responses write", responseWriteStartedAt, requestStartedAt);
+
+    try {
+      stage = "updating RSVP lookup";
+      updateRsvpLookup(parameters);
+      logRequest(requestId, "lookup updated");
+    } catch (lookupError) {
+      logRequest(requestId, "non-critical failure", "lookup update: " + lookupError);
     }
-    updateRsvpLookup(parameters);
-    CacheService.getScriptCache().remove(INVITE_CACHE_KEY);
 
-    queueRsvpEmail(parameters);
-
+    outcome = "success";
+    logRequest(requestId, "doPost completed", "response saved; maintenance deferred");
     return jsonResponse({ result: "success", data: parameters });
   } catch (error) {
-    Logger.log(error);
-    return jsonError("Sorry, there is an issue with the server.");
+    logRequest(requestId, "doPost failed", stage + ": " + (error.stack || error));
+    return jsonError("Could not save the RSVP while " + stage + ". Please try again.");
   } finally {
+    logRequest(requestId, "doPost finished", outcome + "; lockAcquired=" + lockAcquired);
+    logTiming(requestId, "total", requestStartedAt, requestStartedAt);
     if (lockAcquired && lock.hasLock()) lock.releaseLock();
   }
 }
 
-function formatMailBody(obj) {
-  var result = "";
-  for (var key in obj) {
-    result += "<h4 style='text-transform: capitalize; margin-bottom: 0'>" + key + "</h4><div>" + obj[key] + "</div>";
-  }
-  return result;
-}

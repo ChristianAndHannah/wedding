@@ -1,4 +1,4 @@
-var RSVP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx1jD9m0n7j3Fv9Am_wzpgJXbUT3T3z6qxE6fI2Mxin-_qQZX0yOacw7sHGY4p-0zChzA/exec';
+var RSVP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVW8mLpIneYuVDdjiXSghOvLFn6u7ivgYjw8mS83sVHxrP67P-NgT-V6fl0sbKX3M5QQ/exec';
 
 var familyGroups = [];
 var familyGroupsRequest = null;
@@ -434,6 +434,59 @@ function warmRsvpServer() {
     loadFamilyGroups();
 }
 
+function submitRsvpViaHiddenForm(data, onComplete, onTimeout) {
+    var frameName = 'rsvp-submit-frame-' + Date.now();
+    var iframe = document.createElement('iframe');
+    var form = document.createElement('form');
+    var loadCount = 0;
+    var completed = false;
+
+    iframe.name = frameName;
+    iframe.setAttribute('aria-hidden', 'true');
+    iframe.style.display = 'none';
+
+    form.method = 'POST';
+    form.action = RSVP_SCRIPT_URL;
+    form.target = frameName;
+    form.style.display = 'none';
+
+    Object.keys(data).forEach(function (key) {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = data[key] == null ? '' : data[key];
+        form.appendChild(input);
+    });
+
+    function finish(callback) {
+        if (completed) {
+            return;
+        }
+
+        completed = true;
+        window.clearTimeout(timeoutId);
+        iframe.onload = null;
+        iframe.parentNode.removeChild(iframe);
+        form.parentNode.removeChild(form);
+        callback();
+    }
+
+    iframe.onload = function () {
+        loadCount += 1;
+        if (loadCount > 1) {
+            finish(onComplete);
+        }
+    };
+
+    document.body.appendChild(iframe);
+    document.body.appendChild(form);
+    form.submit();
+
+    var timeoutId = window.setTimeout(function () {
+        finish(onTimeout);
+    }, 20000);
+}
+
 $(document).ready(function () {
     familyGroups = readFamilyGroupsCache();
     resetFamilyLookupState();
@@ -790,35 +843,21 @@ $(document).ready(function () {
             update_existing: hadExistingRsvp ? '1' : '0'
         };
 
-        rsvpSubmissionRequest = $.ajax({
-            url: RSVP_SCRIPT_URL,
-            method: 'POST',
-            data: data,
-            dataType: 'json',
-            timeout: 15000
-        })
-            .done(function (response) {
-                if (!response || response.result !== 'success') {
-                    var message = response && response.message ? response.message : 'The RSVP could not be saved. Please try again.';
-                    $('#alert-wrapper').html(alert_markup('danger', message));
-                } else {
-                    if (response && response.data) {
-                        applySavedRsvpToFamily(family, response.data);
-                    }
-                    $('#alert-wrapper').html('');
-                    resetFamilyLookupState();
-                    $('#rsvp-modal').modal('show');
-                }
-            })
-            .fail(function (response) {
-                $('#alert-wrapper').html(alert_markup('danger', '<strong>Sorry!</strong> There is some issue with the server.'));
-            })
-            .always(function () {
-                rsvpSubmissionRequest = null;
-                if ($('#family-id').val()) {
-                    setRsvpSubmitDisabled(false);
-                }
-            });
+        rsvpSubmissionRequest = {};
+        submitRsvpViaHiddenForm(data, function () {
+            applySavedRsvpToFamily(family, data);
+            writeFamilyGroupsCache(familyGroups);
+            $('#alert-wrapper').html('');
+            resetFamilyLookupState();
+            $('#rsvp-modal').modal('show');
+            rsvpSubmissionRequest = null;
+        }, function () {
+            $('#alert-wrapper').html(alert_markup('danger', '<strong>Sorry!</strong> The server did not confirm the RSVP. Please check the response sheet before submitting again.'));
+            rsvpSubmissionRequest = null;
+            if ($('#family-id').val()) {
+                setRsvpSubmitDisabled(false);
+            }
+        });
     });
 
 });
